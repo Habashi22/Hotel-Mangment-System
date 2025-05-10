@@ -1,0 +1,79 @@
+﻿body {
+    background-color: #f8f9fa;
+}
+
+.custom-card {
+    border-radius: 10px;
+    /*box-shadow: 2px 4px 15px rgba(0, 0, 0, 0.15); *//* Added slight 3D shadow */
+}
+
+.rules {
+    margin-top: 20px;
+}
+
+.rule-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+    .rule-item i {
+        font-size: 20px;
+        color: #007bff;
+    }
+
+/* Payment Icons - Made Smaller & Inline */
+.payment-icons i {
+    font-size: 30px;
+    margin-right: 8px;
+    color: #333;
+}
+
+/* Children & Beds Section - Flex */
+.row.align-items-start {
+    display: flex;
+    align-items: flex-start;
+}
+
+
+/* Payment Images Styling */
+.payment-images {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 5px;
+}
+
+    .payment-images img {
+        width: 80px; /* Adjust to fit properly */
+        height: auto;
+    }
+
+/* Payment Methods Styling */
+.payment-methods {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 5px;
+}
+
+    .payment-methods img {
+        width: 50px; /* Keep all payment logos uniform */
+        height: auto;
+    }
+
+/* Custom Cash Badge */
+.cash-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px; /* Match the size of images */
+    height: 32px; /* Adjust height for balance */
+    background-color: green;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    text-align: center;
+}

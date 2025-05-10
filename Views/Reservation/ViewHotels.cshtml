@@ -1,0 +1,184 @@
+﻿@model IEnumerable<MVCBookingFinal_YARAB_.Models.Hotel>
+
+@{
+    ViewData["Title"] = "ViewHotels";
+    var selectlist = Enum.GetValues(typeof(AmenityEnum))
+                    .Cast<AmenityEnum>()
+                    .Where(a => a != AmenityEnum.WiFi)  // Optional: Filter out a specific enum value
+                    .Select(a => new SelectListItem
+                            {
+                                Value = ((int)a).ToString(),  // Enum integer value
+                                Text = a.ToString()        // Enum string name
+
+                            })
+                    .ToList();
+}
+
+
+
+
+
+
+<style>
+    .btn {
+         padding-top: 6px; 
+         padding-bottom: 6px; 
+        padding-left: 10px;
+        padding-right: 10px;
+        border-radius: 30px;
+        font-size: 14px;
+    }
+</style>
+
+
+<div class="container px-5">
+
+
+    <div class="container row">
+
+
+
+        <div class="col-sm-12 col-md-2 mb-3 mb-lg-0 col-lg-3  ">
+
+            <div class="border p-3 rounded shadow-sm">
+    <form action="FilterHotels" class="d-flex flex-column align-items-center justify-content-center">
+        @{
+            HotelsortBy sort = HotelsortBy.OurTopPicks;
+            if (ViewBag.Sorting is not null)
+            {
+                sort = ViewBag.Sorting;
+            }
+            // ViewBag.Amenities 
+        }
+        
+        <!-- Amenities Select -->
+        <div class="mb-3 w-100">
+            <label for="Amenities" class="form-label">Select Amenities</label>
+            <select class="form-control" name="Amenities" asp-items="@selectlist" multiple size="7">
+            </select>
+        </div>
+        
+        <!-- Sorting Select -->
+        <div class="mb-3 w-100">
+            <label for="Sorting" class="form-label">Sort By</label>
+                        <select class="form-control" name="Sorting">
+                            @foreach (var item in Html.GetEnumSelectList<HotelsortBy>())
+                            {
+                                if (sort == (HotelsortBy)(int.Parse(item.Value)))
+                                {
+                                    <option value="@item.Value" selected>
+                                        @item.Text
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Value">
+                                        @item.Text
+                                    </option>
+                                }
+                            }
+                        </select>
+        </div>
+        
+        <!-- Submit Button -->
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary" style="padding:6px 20px;">Filter</button>
+        </div>
+    </form>
+</div>
+        </div>
+
+
+
+        <div class="col-sm-12 col-md-4 mb-3 mb-lg-0 col-lg-9">
+            @foreach (var item in Model)
+            {
+                var myflags = Enum.GetValues(typeof(AmenityEnum))
+                .Cast<AmenityEnum>()
+                .Where(amenity => item.Ameneties.Amenities.HasFlag(amenity))
+                .ToList();
+
+                <div class="row g-0">
+                    <div class="card mb-3" style="border-radius: 15px;">
+                        <div class="row g-0">
+
+                            <!-- Image Section -->
+                            <div class="col-md-4 p-3">
+                                <a asp-action="GoToHotel" asp-route-id="@item.id">
+                                    <img src="~/ProductsImages/@item.Images.FirstOrDefault()?.Image" alt="64338.jpg" class="img-fluid w-100 h-100"
+                                         style="border-radius:15px; object-fit: cover;" alt="...">
+                                </a>
+                                
+                            </div>
+
+                            <!-- Card Body Section -->
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- Name, Address, Description -->
+                                        <div class="col-md-9">
+                                            <a asp-action="GoToHotel" asp-route-id="@item.id" class="text-decoration-none">
+                                                <h5 class="card-title">
+                                                @item.Name
+                                                @for (int i = 0; i < item.starRating; i++)
+                                                {
+                                                    <i class="fas fa-star" style="color: gold;"></i>
+                                                }
+                                                </h5>
+                                            </a>
+                                            <p class="card-text">@item.Address</p>
+                                            <p class="card-text"><small class="text-muted">@item.Description</small></p>
+                                        </div>
+
+                                        <!-- City Name -->
+                                        <div class="col-md-3 d-flex flex-column align-items-end">
+                                            <p class="card-text pe-2">@item.city.Name</p>
+                                            <a asp-action="GoToHotel" asp-route-id="@item.id" class="card-text pe-2  text-muted text-decoration-none d-block mb-2" >@item.Reviewed.Count reviews</a>
+                                            <a asp-action="GoToHotel" asp-route-id="@item.id" class="btn btn-primary btn-sm" style="border-radius:5px">Show Prices</a>
+                                        </div>
+                                    </div>
+                                </div> <!-- End Card Body -->
+                            </div>
+
+                        </div> <!-- End Row -->
+                    </div> <!-- End Card -->
+                </div> <!-- End Row -->
+            }
+        </div>
+
+
+
+
+
+
+        @{
+            int nextpage = (ViewBag.PageNum) + 1;
+            int Previous = (ViewBag.PageNum) - 1;
+        }
+        <div>page number @ViewBag.PageNum </div>
+        @if (ViewBag.PageNum != 0)
+        {
+            <span> &lt; &lt;</span>
+            <a asp-action="nextPage" asp-asp-controller="Reservation" asp-route-pagenum="@Previous"> Previous page</a>
+            <span>--</span>
+        }
+        @if (Model.Count() == 10)
+        {
+            <a asp-action="nextPage" asp-asp-controller="Reservation" asp-route-pagenum="@nextpage"> next page</a>
+        }
+
+        <span> &gt;&gt; </span>
+
+
+        <partial name="_modalPartial"></partial>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+ 

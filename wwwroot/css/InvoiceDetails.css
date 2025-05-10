@@ -1,0 +1,102 @@
+
+.invoice-details {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+    .invoice-details .card {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        margin: 20px auto;
+        max-width: 900px;
+        border: none;
+        border-radius: 10px;
+    }
+
+    .invoice-details .card-header {
+        background: linear-gradient(135deg, #1a374d 0%, #142b3b 100%);
+        border-radius: 10px 10px 0 0 !important;
+        padding: 1.5rem;
+    }
+
+        .invoice-details .card-header h4 {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+    .invoice-details .card-body {
+        padding: 2rem;
+    }
+
+    .invoice-details .border-bottom {
+        border-bottom: 2px solid #dee2e6 !important;
+        margin-bottom: 1rem;
+    }
+
+    .invoice-details .table {
+        margin-bottom: 0;
+    }
+
+    .invoice-details .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+
+    .invoice-details .table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .invoice-details .table-primary {
+        background-color: #e7f1ff !important;
+    }
+
+    .invoice-details .text-end {
+        font-weight: 500;
+    }
+
+    .invoice-details .section-title {
+        color: #0d6efd;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .invoice-details .card-footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+        padding: 1rem 2rem;
+        border-radius: 0 0 10px 10px;
+    }
+
+    .invoice-details .btn-secondary {
+        margin: 20px;
+        padding: 0.5rem 1.5rem;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+        .invoice-details .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+        }
+
+    .invoice-details .detail-label {
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .invoice-details .detail-value {
+        color: #212529;
+        font-weight: 400;
+    }
+
+    .invoice-details .billing-table td {
+        padding: 0.75rem;
+    }
+
+    .invoice-details .final-amount {
+        font-size: 1.1rem;
+        color: #0d6efd;
+    }
+
+    .invoice-details .amenities-list {
+        color: #495057;
+        line-height: 1.6;
+    }

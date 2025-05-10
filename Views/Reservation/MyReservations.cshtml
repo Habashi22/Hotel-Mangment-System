@@ -1,0 +1,488 @@
+﻿@model IEnumerable<MVCBookingFinal_YARAB_.Models.Reservation>
+@{
+    ViewData["Title"] = "My Reservations";
+}
+
+<div class="traeReservations">
+    
+
+    <div class="traeReservations__tableWrapper">
+        <table class="traeReservations__table">
+            <thead>
+                <tr>
+                    <th>Meal Plan</th>
+                    <th>Amenities</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Status</th>
+                    <th>Cancellation Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="traeReservations__row">
+                        <td>
+                            <span class="traeReservations__mealPlan">
+                                <i class="fas fa-utensils"></i>
+                                @item.mealPlan.plan
+                            </span>
+                        </td>
+                        <td>
+                            <span class="traeReservations__amenities">
+                                <i class="fas fa-concierge-bell"></i>
+                                @item.amenity.Amenities
+                            </span>
+                        </td>
+                        <td>
+                            <span class="traeReservations__date">
+                                <i class="fas fa-calendar-check"></i>
+                                @item.CheckInDate.ToString("MMM dd, yyyy")
+                            </span>
+                        </td>
+                        <td>
+                            <span class="traeReservations__date">
+                                <i class="fas fa-calendar-times"></i>
+                                @item.CheckOutDate.ToString("MMM dd, yyyy")
+                            </span>
+                        </td>
+                        <td>
+                            <span class="traeReservations__status traeReservations__status--@item.reservationStatus.ToString().ToLower()">
+                                @item.reservationStatus
+                            </span>
+                        </td>
+                        <td>
+                            @if (item.CancellationDate.HasValue)
+                            {
+                                <span class="traeReservations__date traeReservations__date--cancelled">
+                                    <i class="fas fa-ban"></i>
+                                    @item.CancellationDate.Value.ToString("MMM dd, yyyy")
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.reservationStatus == ReservationStatus.Pending)
+                            {
+                                <div class="traeReservations__actions">
+                                    <a asp-action="ContinuePayment" asp-controller="Reservation" asp-route-id="@item.Id"
+                                       class="traeReservations__actionBtn">
+                                        <i class="fas fa-check-circle"></i>
+                                        Confirm
+                                    </a>
+                                    <a asp-action="CancelReservation" asp-controller="Reservation" asp-route-id="@item.Id"
+                                       class="traeReservations__actionBtn traeReservations__actionBtn--cancel">
+                                        <i class="fas fa-times-circle"></i>
+                                        Cancel
+                                    </a>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .traeReservations {
+        padding: 2rem;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+
+    .traeReservations__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .traeReservations__title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .traeReservations__createBtn {
+        background: #0d6efd;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .traeReservations__createBtn:hover {
+            background: #0b5ed7;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .traeReservations__tableWrapper {
+        overflow-x: auto;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+    }
+
+    .traeReservations__table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .traeReservations__table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+    .traeReservations__row {
+        transition: all 0.2s;
+    }
+
+        .traeReservations__row:hover {
+            background: #f8f9fa;
+        }
+
+    .traeReservations__table td {
+        padding: 1rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .traeReservations__mealPlan,
+    .traeReservations__amenities,
+    .traeReservations__date {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .traeReservations__status {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .traeReservations__status--pending {
+        background: #fff3cd;
+        color: #664d03;
+    }
+
+    .traeReservations__status--confirmed {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .traeReservations__status--canceled,
+    .traeReservations__status--cancelled {
+        background: #f8d7da;
+        color: #842029;
+    }
+
+    .traeReservations__date--cancelled {
+        color: #dc3545;
+    }
+
+    .traeReservations__actionBtn {
+        background: #198754;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s;
+    }
+
+        .traeReservations__actionBtn:hover {
+            background: #157347;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+    @@media (max-width: 768px) {
+        .traeReservations {
+            padding: 1rem;
+        }
+
+        .traeReservations__header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .traeReservations__createBtn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    // Add these new styles
+    .traeReservations__actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .traeReservations__actionBtn--cancel {
+        background: #dc3545;
+    }
+
+        .traeReservations__actionBtn--cancel:hover {
+            background: #bb2d3b;
+        }
+</style>
+@* @model IEnumerable<MVCBookingFinal_YARAB_.Models.Reservation>
+@{
+    ViewData["Title"] = "My Reservations";
+}
+
+<div class="traeReservations">
+    <div class="traeReservations__header">
+        <h1 class="traeReservations__title">My Reservations</h1>
+        <a asp-action="Index" asp-controller="Home" class="traeReservations__createBtn">
+            <i class="fas fa-plus"></i> New Reservation
+        </a>
+    </div>
+
+    <div class="traeReservations__tableWrapper">
+        <table class="traeReservations__table">
+            <thead>
+                <tr>
+                    <th>Meal Plan</th>
+                    <th>Amenities</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Status</th>
+                    <th>Cancellation Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="traeReservations__row">
+                        <td>
+                            <span class="traeReservations__mealPlan">
+                                <i class="fas fa-utensils"></i>
+                                @item.mealPlan.plan
+                            </span>
+                        </td>
+                        <td>
+                            <span class="traeReservations__amenities">
+                                <i class="fas fa-concierge-bell"></i>
+                                @item.amenity.Amenities
+                            </span>
+                        </td>
+                        <td>
+                            <span class="traeReservations__date">
+                                <i class="fas fa-calendar-check"></i>
+                                @item.CheckInDate.ToString("MMM dd, yyyy")
+                            </span>
+                        </td>
+                        <td>
+                            <span class="traeReservations__date">
+                                <i class="fas fa-calendar-times"></i>
+                                @item.CheckOutDate.ToString("MMM dd, yyyy")
+                            </span>
+                        </td>
+                        <td>
+                            <span class="traeReservations__status traeReservations__status--@item.reservationStatus.ToString().ToLower()">
+                                @item.reservationStatus
+                            </span>
+                        </td>
+                        <td>
+                            @if (item.CancellationDate.HasValue)
+                            {
+                                <span class="traeReservations__date traeReservations__date--cancelled">
+                                    <i class="fas fa-ban"></i>
+                                    @item.CancellationDate.Value.ToString("MMM dd, yyyy")
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.reservationStatus == ReservationStatus.Pending)
+                            {
+                                <div class="traeReservations__actions">
+                                    <a asp-action="ContinuePayment" asp-controller="Reservation" asp-route-id="@item.Id"
+                                       class="traeReservations__actionBtn">
+                                        <i class="fas fa-check-circle"></i>
+                                        Confirm
+                                    </a>
+                                    <a asp-action="CancelReservation" asp-controller="Reservation" asp-route-id="@item.Id"
+                                       class="traeReservations__actionBtn traeReservations__actionBtn--cancel">
+                                        <i class="fas fa-times-circle"></i>
+                                        Cancel
+                                    </a>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .traeReservations {
+        padding: 2rem;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+
+    .traeReservations__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .traeReservations__title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .traeReservations__createBtn {
+        background: #0d6efd;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .traeReservations__createBtn:hover {
+            background: #0b5ed7;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .traeReservations__tableWrapper {
+        overflow-x: auto;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+    }
+
+    .traeReservations__table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .traeReservations__table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+    .traeReservations__row {
+        transition: all 0.2s;
+    }
+
+        .traeReservations__row:hover {
+            background: #f8f9fa;
+        }
+
+    .traeReservations__table td {
+        padding: 1rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .traeReservations__mealPlan,
+    .traeReservations__amenities,
+    .traeReservations__date {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .traeReservations__status {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .traeReservations__status--pending {
+        background: #fff3cd;
+        color: #664d03;
+    }
+
+    .traeReservations__status--confirmed {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .traeReservations__status--cancelled {
+        background: #f8d7da;
+        color: #842029;
+    }
+
+    .traeReservations__date--cancelled {
+        color: #dc3545;
+    }
+
+    .traeReservations__actionBtn {
+        background: #198754;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s;
+    }
+
+        .traeReservations__actionBtn:hover {
+            background: #157347;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+    @@media (max-width: 768px) {
+        .traeReservations {
+            padding: 1rem;
+        }
+
+        .traeReservations__header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .traeReservations__createBtn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    // Add these new styles
+    .traeReservations__actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .traeReservations__actionBtn--cancel {
+        background: #dc3545;
+    }
+
+        .traeReservations__actionBtn--cancel:hover {
+            background: #bb2d3b;
+        }
+</style> *@

@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewData["Title"] = "CheckYourInbox";
+}
+<div class="container">
+
+    <h1>CheckYourInbox</h1>
+    <div class="inbox">
+
+        <h1>
+            Password reset link has been sent to your email.
+        </h1>
+        <div >
+            <a href="https://mail.google.com/mail/u/0/#inbox" class="btn btn-primary">Check Your Inbox</a>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

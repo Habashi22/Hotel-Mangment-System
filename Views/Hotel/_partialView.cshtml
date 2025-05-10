@@ -1,0 +1,207 @@
+﻿@model MVCBookingFinal_YARAB_.ViewModels.HotelViewModel
+@{
+    var selectlist = Enum.GetValues(typeof(AmenityEnum))
+                    .Cast<AmenityEnum>()
+                    .Where(a => a != AmenityEnum.WiFi)  // Optional: Filter out a specific enum value
+                    .Select(a => new SelectListItem
+                            {
+                                Value = ((int)a).ToString(),  // Enum integer value
+                                Text = a.ToString()        // Enum string name
+
+                            })
+                    .ToList();
+
+
+}
+
+<div class="form-group">
+    <label asp-for="Name" class="control-label"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Description" class="control-label"></label>
+    <input asp-for="Description" class="form-control" />
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="CityId" class="control-label"></label>
+    <select asp-for="CityId" class="form-control" asp-items="ViewBag.cityselectlist"></select>
+</div>
+<div class="form-group">
+    <label asp-for="starRating" class="control-label"></label>
+    <input asp-for="starRating" class="form-control" />
+    <span asp-validation-for="starRating" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Address" class="control-label"></label>
+    <input asp-for="Address" class="form-control" />
+    <span asp-validation-for="Address" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Email" class="control-label"></label>
+    <input asp-for="Email" class="form-control" />
+    <span asp-validation-for="Email" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="PhoneNumber" class="control-label"></label>
+    <input asp-for="PhoneNumber" class="form-control" />
+    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Ameneties" class="control-label"></label>
+    <select asp-for="Ameneties" class="form-control" asp-items="selectlist" multiple>
+    </select>
+</div>
+<div class="form-group">
+    <label asp-for="Images" class="control-label">Upload Images</label>
+    <input asp-for="Images" type="file" class="form-control" multiple>
+
+</div>
+
+
+@* @inject IConfiguration config
+@{
+    string first = "https://maps.googleapis.com/maps/api/js?key=";
+    string second = config["GoogleMapsApiKey"];
+    string third = "&libraries=places&callback=initMap";
+    string src = first + second + third;
+
+}
+
+<script src="@src"
+        async defer></script> *@
+@* <style>
+    #map {
+        height: 400px;
+        width: 100%;
+    }
+
+    #latitude, #longitude {
+        margin-top: 10px;
+    }
+
+    #searchBox {
+        margin-bottom: 10px;
+        width: 300px;
+        padding: 10px;
+        font-size: 16px;
+    }
+</style> *@
+
+
+@{
+    string lat = Model?.Latitude ?? "30.0444";  // Default to Cairo coordinates
+    string lng = Model?.Longitude ?? "31.2357";
+    lat = string.IsNullOrEmpty(lat) ? "30.0444" : lat;
+    lng = string.IsNullOrEmpty(lng) ? "31.2357" : lng;
+}
+
+<div class="form-group">
+    <input id="searchBox" type="text" placeholder="Search for a location..." class="form-control" style="margin-bottom: 10px;" />
+    <div id="map" style="height: 400px; width: 100%; border-radius: 8px; margin-bottom: 15px;"></div>
+    <input type="hidden" id="latitude" name="Latitude" value="@lat" />
+    <input type="hidden" id="longitude" name="Longitude" value="@lng" />
+</div>
+
+
+@* <div class="form-group">
+    <label>Location</label>
+    <input id="searchBox" type="text" placeholder="Search for a location..." class="form-control" style="margin-bottom: 10px;" />
+    <div id="map" style="height: 400px; width: 100%; border-radius: 8px; margin-bottom: 15px;"></div>
+    <input type="hidden" asp-for="Latitude" id="latitude" value="@lat" />
+    <input type="hidden" asp-for="Longitude" id="longitude" value="@lng" />
+</div> *@
+
+
+<script>
+    let map, marker, searchBox;
+
+    function initMap() {
+        let lat = parseFloat("@lat");
+        let lng = parseFloat("@lng");
+
+        // Force map reinitialization
+        const mapElement = document.getElementById('map');
+        if (mapElement) {
+            // Clear previous instance if exists
+            mapElement.innerHTML = '';
+
+            map = new google.maps.Map(mapElement, {
+                center: { lat: lat, lng: lng },
+                zoom: 12
+            });
+
+            // Create marker at the specified position
+            marker = new google.maps.Marker({
+                map: map,
+                draggable: true,
+                position: { lat: lat, lng: lng }
+            });
+
+            // Initialize search box
+            const searchInput = document.getElementById('searchBox');
+            if (searchInput) {
+                searchBox = new google.maps.places.SearchBox(searchInput);
+                map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
+
+                // Update search box bounds when map bounds change
+                map.addListener('bounds_changed', () => {
+                    searchBox.setBounds(map.getBounds());
+                });
+
+                // Handle place selection
+                searchBox.addListener('places_changed', () => {
+                    const places = searchBox.getPlaces();
+                    if (places.length === 0) return;
+
+                    const place = places[0];
+                    const newLat = place.geometry.location.lat();
+                    const newLng = place.geometry.location.lng();
+
+                    marker.setPosition(place.geometry.location);
+                    map.setCenter(place.geometry.location);
+                    updateCoordinateInputs(newLat, newLng);
+                });
+            }
+
+            // Map click handler
+            google.maps.event.addListener(map, 'click', (event) => {
+                marker.setPosition(event.latLng);
+                updateCoordinateInputs(event.latLng.lat(), event.latLng.lng());
+            });
+
+            // Marker drag handler
+            google.maps.event.addListener(marker, 'dragend', () => {
+                const position = marker.getPosition();
+                updateCoordinateInputs(position.lat(), position.lng());
+            });
+        }
+    }
+
+    function updateCoordinateInputs(lat, lng) {
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+    }
+
+    // Ensure map loads when the page loads and when content changes
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof google !== 'undefined') {
+            initMap();
+        }
+    });
+
+    // Optional: Add this if you're using any dynamic content loading
+    if (typeof google !== 'undefined') {
+        initMap();
+    }
+</script>
+
+@inject IConfiguration config
+@{
+    string first = "https://maps.googleapis.com/maps/api/js?key=";
+    string second = config["GoogleMapsApiKey"];
+    string third = "&v=quarterly&libraries=places,geometry,drawing&callback=initMap";
+    string src = first + second + third;
+}
+<script src="@src" async defer></script>

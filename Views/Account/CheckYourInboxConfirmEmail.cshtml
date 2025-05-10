@@ -1,0 +1,22 @@
+﻿
+@{
+    Layout = "_NavFooter";
+}
+
+<div class="container inboxconfirmemail">
+   <div >
+        <h1>Check Your Inbox</h1>
+        <h3>A confirmation email has been sent to your email address. Please check your inbox and click the link to confirm your email.</h3>
+   </div>
+
+<div>
+    <a href="https://mail.google.com/mail/u/0/#inbox" class="btn btn-primary">Check Your Inbox</a>
+</div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

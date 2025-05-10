@@ -1,0 +1,547 @@
+﻿@model MVCBookingFinal_YARAB_.ViewModels.RegisterViewModel
+@{
+    Layout = null;
+}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
+    <style>
+        *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+        }
+
+        #main{
+        display: flex;         
+        height: 100vh; /* Ensure full screen height */
+        }
+
+        #right, #left{
+        /* width: 50%; */
+        height: 100vh;
+
+        display: flex;           
+        align-items: center; /* Center children vertically */
+        position: relative;
+        }
+
+        #right {
+        width: 52%;
+        justify-content: flex-start;
+        }
+
+        #left {
+        width: 48%;
+        justify-content: flex-end;
+
+        }
+        #right, #LeftSmall{
+        background-color: #1a374d;
+
+        }
+        #left,#LeftSmall{
+        background-color: white;
+
+        }
+        #LeftSmall,#RightSmall{
+        width: 70%;
+        height: 90vh;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        }
+        #LeftSmall{
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+        }
+        #RightSmall{
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+        }
+
+        .logo {
+        font-family: "Lora", serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 50px;
+        }
+        .login-section {
+        flex: 1;
+        width: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* background: #1e1e2f; */
+        }
+
+        .login-box,.signup-box {
+        /* background: #12121c; */
+        padding: 40px;
+        border-radius: 10px;
+        /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); */
+        color: black;
+        width: 80%;
+        text-align: center;
+        }
+        @@media (max-width: 768px) {
+
+        .container {
+        flex-direction: column;
+        width: 90%;
+        height: auto;
+        }
+        .info-section {
+        display: none;
+        }
+        .login-box,.signup-box {
+        width: 100%;
+        }
+        }
+
+
+        h2 {
+        font-size: 24px;
+        }
+
+
+
+        /* /New inputs/ */
+        .input-group {
+        position: relative;
+        margin: 15px 0;
+        width: 100%;
+        }
+
+        .input-group input {
+        width: 100%;
+        padding: 10px 0;
+        border: none;
+        border-bottom: 2px solid #ccc; /* Bottom border only */
+        outline: none;
+        background: transparent;
+        font-size: 16px;
+        transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+        border-bottom: 2px solid #1a374d; /* Highlighted color on focus */
+        }
+
+        ::placeholder {
+        color: #888;
+        font-size: 14px;
+        }
+
+
+        .password-container input {
+        flex: 1;
+        }
+        /* /New inputs/ */
+
+        .alice-regular {
+        font-family: "Alice", serif;
+        font-weight: 400;
+        font-style:  normal;
+        }
+
+        input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc; /* Light gray border */
+        background-color: #f5f5f5; /* Light gray background */
+        color: black; /* Ensure text is visible */
+        }
+
+        .password-container {
+        display: flex;
+        align-items: center;
+        position: relative;
+        }
+
+        .toggle-password {
+        position: absolute;
+        right: 10px;
+        cursor: pointer;
+        /* color: #bbb; */
+        color: #888;
+        font-size: 16px;
+        }
+
+        .forgot-password {
+        display: block;
+        font-size: 12px;
+        margin: 10px 0;
+        color: #1a374d;
+        text-decoration: none;
+        }
+
+        .login-btn {
+        margin-top:12px;
+        width: 100%;
+        padding: 10px;
+        background-color: #1a374d;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 5px 10px rgba(128, 90, 213, 0.3);
+        margin-bottom: 20px;
+        }
+
+        .signup-btn {
+        color: #1a374d;
+        text-decoration: none;
+        }
+
+
+
+        /* EXTERNAL LOGIN */
+
+
+        .social-login {
+        margin-top: 15px;
+        }
+
+        .social-login p {
+        font-size: 14px;
+        color: #666;
+        }
+
+        .social-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-top: 10px;
+        }
+
+        .social-buttons button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: 0.3s;
+        color: white;
+        }
+
+        .facebook-btn {
+        background-color: #1877F2;
+        }
+
+        .google-btn {
+        background-color: #DB4437;
+        }
+
+        .facebook-btn:hover {
+        background-color: #155dc1;
+        }
+
+        .google-btn:hover {
+        background-color: #c1351c;
+        }
+
+        .social-buttons i {
+        font-size: 16px;
+        }
+
+
+
+        .info-section {
+        flex: 1;
+        width: 50%;
+        /* background-color: #805ad5; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        }
+
+        .info-section h1 {
+        font-size: 24px;
+        }
+
+        .info-section span {
+        font-weight: bold;
+        }
+        /* 
+        .info-section img {
+        width: 500px;
+        height: 500px;
+        margin-top: 20px;
+        } */
+
+        .info-section img {
+        width: 400px;
+        height: 400px;
+        margin-top:20px;
+        }
+
+        .form-check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 15px 0;
+        }
+
+        .form-check-input {
+        margin: 0;
+        width: auto;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="main">
+        <div id="left">
+            <div id="LeftSmall">
+                <div class="login-section">                  
+                    <div class="login-box" id="loginBox">
+                        <h2>Login</h2>
+
+                        <form id="loginForm" asp-action="Login">
+                            @* <div asp-validation-summary="All"></div> *@
+                            @if ((bool)(ViewBag.confirmemail?? false) == true && ViewBag.invalidecomb == false)
+                            {
+                                <div style="color:red"> Confirm email first</div>
+                            }
+                            else if ((bool)(ViewBag.confirmemail?? true) == false && ViewBag.invalidecomb == true)
+                            {
+                                <div style="color:red"> Incorrect email/password combination</div>
+
+                            }
+                            <div class="input-group mt-2">
+                                <input type="text" id="username" name="UsernameOrEmail" required placeholder="Username">
+                            </div>
+                            <div class="input-group mt-2">
+                                <!-- <div class="password-container">
+                                <input type="password" id="password" required placeholder="Password">
+                                <span class="toggle-password" onclick="togglePassword()">👁</span>
+                                </div> -->
+                                <div class="password-container mt-2">
+                                    <input type="password" id="password" name="loginPassword" required placeholder="Password">
+                                    <i class="fa-solid fa-eye toggle-password" style="color: #1a374d;" onclick="togglePassword('password', this)"></i>
+                                </div>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" name="RememberMe" class="form-check-input" id="rememberme" />
+                                <label for="rememberme">Remember me?</label>
+                            </div>
+                            @* <label for="rememberme">Forgot Password?</label> *@
+                            <a asp-action="ForgetPassword">Forgot Password? </a>
+                            <button type="submit" class="login-btn">Login</button>
+                        </form>
+                        <p>Don't have an account? <a href="#" class="signup-btn" onclick="toggleForms()">Sign up</a></p>
+
+                        <div class="social-login">
+                            <p>Or login with</p>
+                            <div class="social-buttons">
+                                <button class="social-icon facebook-btn">
+                                    <a asp-action="ExternalLogin" asp-controller="Account" asp-route-provider="Facebook">
+                                        <i class="fa-brands fa-facebook-f" style="color:white"></i>
+                                    </a>
+                                </button>
+                                <button class="social-icon google-btn" >
+                                    <a asp-action="ExternalLogin" asp-controller="Account" asp-route-provider="Google"  >
+                                        <i class="fa-brands fa-google" style="color:white"></i>
+
+                                    </a>
+                                </button>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+                    <div class="signup-box" id="signupBox" style="display: none;">
+                        <h2>Sign Up</h2>
+                        <p>Create your account</p>
+                        <form id="signupForm" asp-action="Register">
+                            <div asp-validation-summary="ModelOnly"></div>
+                            <div class="input-group">
+                                <input type="text" id="firstName" name="FirstName" required placeholder="First Name">
+                            </div>
+                            <span asp-validation-for="FirstName"></span>
+                            <div class="input-group">
+                                <input type="text" id="lastName" name="LastName" required placeholder="Last Name">
+
+                            </div>
+                            <span asp-validation-for="LastName"></span>
+                            <div class="input-group">
+                                <input type="text"  name="UserName" required placeholder="User Name">
+
+                            </div>
+                            <span asp-validation-for="UserName"></span>
+                            <div class="input-group">
+                                <input type="email" id="email" name="Email" required placeholder="Email">
+
+                            </div>
+                            <span asp-validation-for="Email"></span>
+
+
+                            <!-- <div class="input-group">
+                            <div class="password-container">
+                            <input type="password" id="signupPassword" required placeholder="Password">
+                            <span class="toggle-password" onclick="togglePassword()">👁</span>
+                            </div>
+                            </div>
+                            <div class="input-group">
+                            <div class="password-container">
+                            <input type="password" id="confirmPassword" required placeholder="Confirm Password">
+                            <span class="toggle-password" onclick="togglePassword()">👁</span>
+                            </div>
+                            </div> -->
+
+                            <div class="input-group">
+                                <div class="password-container">
+                                    <input type="password" id="signupPassword" name="Password" required placeholder="Password">
+
+                                    <i class="fa-solid fa-eye toggle-password" style="color: #1a374d;" onclick="togglePassword('signupPassword', this)"></i>
+                                </div>
+                                <span asp-validation-for="Password"></span>
+
+                            </div>
+
+                            <div class="input-group">
+                                <div class="password-container">
+                                    <input type="password" id="confirmPassword" name="ConfirmPassword" required placeholder="Confirm Password">
+                                    <i class="fa-solid fa-eye toggle-password" style="color: #1a374d;" onclick="togglePassword('confirmPassword', this)"></i>
+                                </div>
+                                <span asp-validation-for="ConfirmPassword"></span>
+
+                            </div>
+
+
+
+                            <div class="input-group">
+                                <input type="date" id="dob" name="DateOfBirth" required placeholder="Date of Birth">
+                            </div>
+                            <span asp-validation-for="DateOfBirth"></span>
+
+                            <div class="input-group">
+                                <input type="tel" id="phone" name="PhoneNumber" required placeholder="Phone Number">
+                            </div>
+                            <span asp-validation-for="PhoneNumber"></span>
+
+                            <button type="submit" class="login-btn">Sign Up</button>
+                        </form>
+                        <p>Already have an account? <a href="#" class="signin-btn" onclick="toggleForms()">Sign in</a></p>
+
+                        <div class="social-login">
+                            <p>Or sign up with</p>
+                            <div class="social-buttons">
+                                <button class="social-icon facebook-btn">
+                                    <a asp-action="ExternalLogin" asp-controller="Account" asp-route-provider="Facebook">
+                                        <i class="fa-brands fa-facebook-f" style="color:white"></i>
+                                    </a>
+                                </button>
+                                <button class="social-icon google-btn">
+                                    <a asp-action="ExternalLogin" asp-controller="Account" asp-route-provider="Google">
+
+                                        <i class="fa-brands fa-google" style="color:white"></i>
+
+                                    </a>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="right">
+            <div id="RightSmall">
+                <div class="info-section">
+                    <p style="font-size: 20px;">Welcome to <br><span class="logo" >TRAVON</span></p>
+                    <p>Your Perfect Stay, Just a Click Away!</p>
+                    <!-- <img src="../img/share.svg" width="1000px" height="200px" alt="Illustration"> -->
+                    <img src="/ProductsImages//airplane[1].svg"  alt="Illustration">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleForms() {
+        const loginBox = document.getElementById('loginBox');
+        const signupBox = document.getElementById('signupBox');
+
+        if (loginBox.style.display === 'none') {
+        loginBox.style.display = 'block';
+        signupBox.style.display = 'none';
+        } else {
+        loginBox.style.display = 'none';
+        signupBox.style.display = 'block';
+        }
+        }
+
+
+
+        function togglePassword(inputId, icon) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+        input.type = 'password';
+        icon.classList.replace("fa-eye-slash", "fa-eye");
+        }
+        }
+
+    </script>
+    @if (ViewBag.operation == "Register")
+    {
+        <script>
+            toggleForms();
+        </script>
+    }
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

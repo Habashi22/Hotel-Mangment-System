@@ -1,0 +1,37 @@
+﻿
+@model IEnumerable<MVCBookingFinal_YARAB_.Models.Review>
+@if(Model is not null){
+    @foreach(var review in Model){
+
+        <div class="card text-white bg-secondary mb-3" style="max-width: 20rem;">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-4">
+
+                        @review.User.UserName
+                    </div>
+                    <div class="col-4">
+                        @for(int i=0;i<@review.Rating;i++)
+                        {
+
+                            <i class="filled fas fa-star" style="color:darkgoldenrod"></i>
+                        }
+                        @for (int i = @review.Rating;i<5;i++)
+                        {
+                            <i class="far fa-star"></i>
+                        }
+
+                </div>
+                <div class="col-4">
+                    @review.ReviewDate
+                </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <h4>@review.Description</h4>
+    </div>
+
+</div>
+}
+}

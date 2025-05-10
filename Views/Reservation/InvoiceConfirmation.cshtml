@@ -1,0 +1,126 @@
+﻿@model MVCBookingFinal_YARAB_.ViewModels.InvoiceConfirmationViewModel
+
+@{
+    ViewData["Title"] = "Payment Confirmation";
+}
+
+<style>
+    .payment-method {
+        border: 2px solid #eef2f7;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .payment-method:hover {
+            border-color: #0d6efd;
+            background-color: #f8faff;
+            transform: translateY(-2px);
+        }
+
+    .booking-summary {
+        background-color: #f8faff;
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+
+    .amount-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+    }
+
+    .total-amount {
+        border-top: 2px solid #eef2f7;
+        margin-top: 1rem;
+        padding-top: 1rem;
+    }
+
+    .hotel-name {
+        color: #2c3e50;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .secure-badge {
+        background: #e8f5e9;
+        color: #2e7d32;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h2 class="mb-3">Complete Your Booking</h2>
+                <p class="text-muted">@Model.Reservation.Reserved.FirstOrDefault().Room.Hotel.Name Hotel</p>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body booking-summary">
+                    <h5 class="mb-4">Booking Summary</h5>
+
+                    <div class="amount-row">
+                        <span>Total Amount</span>
+                        <span>$@Model.TotalAmount</span>
+                    </div>
+
+                    @if (Model.discount > 0)
+
+                    {
+                        <div class="amount-row">
+                            <span>Discount</span>
+                            <span class="text-success">-$@Model.discount</span>
+                        </div>
+                    }
+
+                    <div class="amount-row">
+                        <span>Tax</span>
+                        <span>$@Model.Tax</span>
+                    </div>
+
+                    <div class="amount-row total-amount">
+                        <span class="fw-bold">Final Amount</span>
+                        <span class="fw-bold text-primary fs-4">$@Model.FinalAmount</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h5 class="mb-3">Select Payment Method</h5>
+
+                <a asp-action="CreateCheckoutSession" asp-controller="Home" asp-route-amount="@Model.FinalAmount.ToString()"
+                   class="payment-method d-flex align-items-center text-decoration-none text-dark mb-3">
+                    <img src="~/ProductsImages/stripeicon.png" alt="Stripe" class="me-3" style="width: 48px; height: 48px;">
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold">Pay with Stripe</div>
+                        <small class="text-muted">Fast and secure payment processing</small>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+                <a asp-action="CreateWithCard" asp-controller="Invoice" asp-route-amount="@Model.FinalAmount.ToString()"
+                   class="payment-method d-flex align-items-center text-decoration-none text-dark">
+                    <img src="~/ProductsImages/creditcardicon.png" alt="Credit Card" class="me-3" style="width: 48px; height: 48px;">
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold">Credit Card</div>
+                        <small class="text-muted">Pay directly with your card</small>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </div>
+
+            <div class="text-center">
+                <div class="secure-badge d-inline-flex align-items-center">
+                    <i class="bi bi-shield-check me-2"></i>
+                    All transactions are secure and encrypted
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+  
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+
+        #latitude, #longitude {
+            margin-top: 10px;
+        }
+
+        #searchBox {
+            margin-bottom: 10px;
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+    @RenderSection("Styles", required: false)
+
+
+@*     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MVCBookingFinal_YARAB_.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha384-MnU2zZmYVNNYHk6j0XOnzjL5cmz8jI6N+55e5y5Jf5xC0X6scmcfqre0fnj6Y67A" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.js"></script> *@
+
+
+</head>
+<body>
+    @inject UserManager<AppUser> UserManager
+    @{
+        var user = await UserManager.GetUserAsync(User);
+        var profilePicture = user?.ProfilePicture ?? "Default.jpg"; // Fallback image
+    }
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MVCBookingFinal_YARAB_</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+
+                    </ul>
+
+                    <ul class="navbar-nav ">
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Log In</a>
+                            </li>
+                           
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <img src="/ProductsImages/@profilePicture" class="nav-link text-dark" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; cursor: pointer;" />
+                            </li>
+                                <li class="nav-item">
+                            <p class="nav-link text-dark">hello @User.Identity.Name</p>
+                            </li>
+                            if (User.IsInRole("ADMIN"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="GiveRole">GiveRole</a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="EditAccount">EditProfile</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">LogOut</a>
+                            </li>
+                            
+                        }
+                    </ul>
+                </div>
+            </div>
+            
+        </nav>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("ADMIN"))
+                        {
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
+                    <ul class="navbar-nav ">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="GiveRole">Roles</a>
+                            </li>
+                              <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="City" asp-action="Index">City</a>
+                            </li>
+                                                          <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Countries" asp-action="Index">Countries</a>
+                            </li>
+                                                          <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Favorites" asp-action="Index">Favorites</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                             </li>
+                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Invoice" asp-action="Index">Invoice</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Payment" asp-action="Index">Payment</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="PaymentMethods" asp-action="Index">PaymentMethods</a>
+                               </li>
+                               <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="PromoCode" asp-action="Index">PromoCode</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Report" asp-action="Index">Report</a>
+                                </li>
+                                <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="ReservationRoom" asp-action="Index">ReservationRoom</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Reviews" asp-action="Index">Reviews</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Hotel" asp-action="Index">Hotels</a>
+                            </li>
+                              <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Room" asp-action="Index">Room</a>
+                            </li>
+                              <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="UsedPromoCode" asp-action="Index">UsedPromoCode</a>
+                            </li>
+                                                          
+ 
+                            
+
+                    </ul>
+                </div>
+            </div>
+
+        </nav>
+                        }
+                        
+
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - MVCBookingFinal_YARAB_ - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

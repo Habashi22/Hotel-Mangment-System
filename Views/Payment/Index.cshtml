@@ -1,0 +1,387 @@
+﻿@model IEnumerable<MVCBookingFinal_YARAB_.Models.Payment>
+
+@{
+    ViewData["Title"] = "Payments";
+}
+
+<div class="payments-container">
+    <div class="header-section">
+        <div class="header-content">
+            <h1 class="page-title">Payment Transactions</h1>
+            <p class="page-subtitle">Manage and track all payment activities</p>
+        </div>
+       
+    </div>
+
+    <div class="table-container">
+        <table class="payments-table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        <div class="th-content">
+                            <i class="fas fa-credit-card th-icon "style="font-size:20px" ></i>
+                            Payment Method
+                        </div>
+                    </th>
+                    <th>
+                        <div class="th-content">
+                            <i class="fas fa-check-circle th-icon" style="font-size:20px"></i>
+                            Status
+                        </div>
+                    </th>
+                    <th>
+                        <div class="th-content">
+                            <i class="fas fa-calendar th-icon"></i>
+                            Payment Date
+                        </div>
+                    </th>
+                    <th>
+                        <div class="th-content">
+                            <i class="fas fa-hashtag th-icon"></i>
+                            Transaction ID
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (item.payment.GetType() == typeof(StripePaymentMethod))
+                            {
+                                <span class="payment-badge stripe">
+                                    <i class="fab fa-stripe"></i>
+                                    Stripe
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="payment-badge credit">
+                                    <i class="fas fa-credit-card"></i>
+                                    Credit Card
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            <span class="status-badge @item.status.ToLower()">@item.status</span>
+                        </td>
+                        <td>@item.PaymentDate.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            <span class="transaction-id">#@item.TransactionId</span>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .payments-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        padding: 0;
+        margin: 40px auto;
+        overflow: hidden;
+        width:80%;
+    }
+
+    .header-section {
+        background: linear-gradient(135deg, #1a374d 0%, #11263a 100%);
+        padding: 30px 40px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .header-content {
+        margin-bottom: 20px;
+    }
+
+    .page-title {
+        color: white;
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .page-subtitle {
+        color: rgba(255, 255, 255, 0.7);
+        margin: 8px 0 0 0;
+        font-size: 15px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .search-box {
+        position: relative;
+        flex: 1;
+        max-width: 300px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 15px 10px 38px;
+        border: none;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            outline: none;
+        }
+
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 14px;
+    }
+
+    .create-btn {
+        background: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+        .create-btn:hover {
+            background: #218838;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+        }
+
+    @@media (max-width: 768px) {
+        .header-section
+
+    {
+        padding: 20px;
+    }
+
+    .header-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box {
+        max-width: none;
+    }
+
+    }
+    /* Add these new styles */
+    .payments-table thead {
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .payments-table th {
+        padding: 16px 20px;
+        color: #1a374d;
+        font-weight: 600;
+        text-align: left;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .th-content {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .th-icon {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    /* Update existing table styles */
+    .payments-table td {
+        padding: 16px 20px;
+    }
+
+    .table-container {
+        padding: 20px 30px;
+        overflow-x: auto;
+    }
+
+    .payments-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .payments-table th {
+            padding: 15px 10px;
+            color: #666;
+            font-weight: 500;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .payments-table td {
+            padding: 20px 10px;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
+
+        .payments-table tr:hover td {
+            background: #f8f9fa;
+        }
+
+    .payment-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+        .payment-badge.stripe {
+            background: #635bff;
+            color: white;
+        }
+
+        .payment-badge.credit {
+            background: #28a745;
+            color: white;
+        }
+
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+        .status-badge.pending {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .status-badge.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-badge.failed {
+            background: #dc3545;
+            color: white;
+        }
+
+    .transaction-id {
+        font-family: monospace;
+        color: #666;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-action {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+    .btn-view {
+        background: #1a374d;
+        color: white;
+    }
+
+        .btn-view:hover {
+            background: #142c3c;
+        }
+
+    .btn-edit {
+        background: #28a745;
+        color: white;
+    }
+
+        .btn-edit:hover {
+            background: #218838;
+        }
+
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+    }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+    @@media (max-width: 768px) {
+        .header-section {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+
+    .payments-table thead {
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .payments-table th {
+        padding: 16px 20px;
+        color: #1a374d;
+        font-weight: 700; /* Updated from 600 to 700 for bolder text */
+        text-align: left;
+        font-size: 14px;
+        white-space: nowrap;
+        text-transform: uppercase; /* Added to make headers more prominent */
+        letter-spacing: 0.5px; /* Added for better readability */
+    }
+
+    .th-content {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .th-icon {
+        color: #6c757d;
+        font-size: 14px;
+    }
+</style>
+
+   
+

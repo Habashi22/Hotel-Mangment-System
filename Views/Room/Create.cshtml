@@ -1,0 +1,213 @@
+﻿@model MVCBookingFinal_YARAB_.ViewModels.RoomViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="create-room-container">
+    <div class="create-card">
+        <div class="card-header">
+            <h1 class="card-title">
+                <i class="fas fa-plus-circle"></i>
+                Create New Room
+            </h1>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Create" enctype="multipart/form-data" class="create-form">
+                @if (ViewContext.ModelState.ErrorCount > 0)
+                {
+                    <div asp-validation-summary="All" class="text-danger validation-summary"></div>
+                }
+                <partial name="EditCreate" />
+
+                <div class="form-actions">
+                    <a asp-action="Index" class="btn-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to List
+                    </a>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-check-circle"></i>
+                        Create Room
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .create-room-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .create-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: #1a374d;
+        padding: 1.5rem;
+        color: white;
+    }
+
+    .card-title {
+        margin: 0;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .create-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .validation-summary {
+        background: #fff5f5;
+        border-left: 4px solid #dc3545;
+        padding: 1rem;
+        border-radius: 4px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: #1a374d;
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #e9ecef;
+        color: #495057;
+    }
+
+    .btn-primary:hover {
+        background: #142c3c;
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary:hover {
+        background: #dee2e6;
+        transform: translateY(-2px);
+    }
+
+    /* Form field styling */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #1a374d;
+            box-shadow: 0 0 0 3px rgba(26, 55, 77, 0.1);
+            outline: none;
+        }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        font-weight: 500;
+    }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .create-room-container
+
+    {
+        margin: 1rem auto;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        justify-content: center;
+        }
+
+        .validation-summary {
+            background: #fff5f5;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+            .validation-summary ul {
+                margin: 0;
+                padding-left: 1.5rem;
+            }
+
+            .validation-summary li {
+                margin: 0.25rem 0;
+            }
+    @@keyframes fadeIn {
+            from{
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,178 @@
+﻿@model MVCBookingFinal_YARAB_.Models.CardPaymentMethod
+
+@{
+    ViewData["Title"] = "GetCardMethodById";
+}
+
+<div class="page-wrapper">
+
+
+<div class="payments-container">
+    <div class="header-section">
+        <div class="header-content">
+            <h1 class="page-title">Card Details</h1>
+            <p class="page-subtitle">View your saved card information</p>
+        </div>
+    </div>
+
+    <div class="card-details-container">
+        <div class="card-preview">
+            <div class="card-icon">
+                <i class="fas fa-credit-card"></i>
+            </div>
+            <div class="card-info">
+                <div class="info-group">
+                    <label>Card Number</label>
+                    <p class="card-number">•••• •••• •••• @Model.CardNumber.Substring(Math.Max(0, Model.CardNumber.Length - 4))</p>
+                </div>
+                <div class="info-row">
+                    <div class="info-group">
+                        <label>Expiry Date</label>
+                        <p>@Model.ExpiryDate.ToString("MM/yyyy")</p>
+                    </div>
+                    <div class="info-group">
+                        <label>CVV</label>
+                        <p>•••</p>
+                    </div>
+                </div>
+                <div class="info-group">
+                    <label>Payment Type</label>
+                    <p class="payment-type">
+                        <i class="fas fa-credit-card"></i>
+                        @Model.PaymentType
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-actions">
+        <a asp-action="GetAllCards" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Back to Cards
+        </a>
+    </div>
+</div>
+</div>
+<style>
+    .page-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: start;
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    .payments-container {
+        background: white;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        max-width: 800px;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .payments-container {
+        background: white;
+        padding: 0;
+        margin: 20px 0;
+        max-width: 800px;
+    }
+
+    .header-section {
+        padding: 20px 0;
+        margin-bottom: 20px;
+    }
+
+    .page-title {
+        color: #1a374d;
+        font-size: 24px;
+        margin: 0;
+    }
+
+    .page-subtitle {
+        color: #6c757d;
+        margin: 5px 0 0;
+        font-size: 14px;
+    }
+
+    .card-details-container {
+        padding: 20px 0;
+    }
+
+    .card-preview {
+        display: flex;
+        gap: 20px;
+        padding: 30px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .card-icon {
+        font-size: 40px;
+        color: #1a374d;
+    }
+
+    .card-info {
+        flex: 1;
+    }
+
+    .info-row {
+        display: flex;
+        gap: 40px;
+        margin: 20px 0;
+    }
+
+    .info-group {
+        margin-bottom: 20px;
+    }
+
+        .info-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-group label {
+            display: block;
+            color: #6c757d;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .info-group p {
+            margin: 0;
+            color: #1a374d;
+            font-size: 16px;
+        }
+
+    .card-number {
+        font-family: monospace;
+        letter-spacing: 1px;
+    }
+
+    .payment-type {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .footer-actions {
+        padding: 20px 0;
+        border-top: 1px solid #dee2e6;
+        margin-top: 20px;
+    }
+
+    .back-btn {
+        color: #1a374d;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+    }
+
+        .back-btn:hover {
+            color: #142c3c;
+        }
+</style>

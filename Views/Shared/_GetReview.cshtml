@@ -1,0 +1,132 @@
+﻿@model IEnumerable<MVCBookingFinal_YARAB_.ViewModels.ReviewViewModel2>
+@using System.Security.Claims
+<h5>Guests who stayed here loved</h5>
+
+<div id="reviewCarousel" class="carousel slide row"  style=" width:950px">
+    <div class="carousel-inner row" style=" width:950px">
+        @{
+            var isFirst = true;
+
+        }
+        @for (int j=0;j<Model.Count()-2;j++)
+        {
+            <div class="carousel-item @(isFirst ? "active" : "") row flex-row" style=" max-width:100%">
+                <div class="row ms-5" style="width:800px">
+
+                    @for(int k = j; k <= j + 2; k++)
+                    {
+                        <div class="col-4">
+
+                            <div class="card shadow-sm  p-3 m-4 mx-auto row" style="border-radius: 15px; height:200px; width:fit-content;">
+
+                                <div class="d-flex align-items-center">
+                                 @*    @if (User.FindFirstValue(ClaimTypes.Name) == Model.ElementAt(k).UserName)
+                                    {
+                                        <a asp-action="Delete" asp-controller="Reviews" asp-route-id="@Model.ElementAt(k).Id">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-controller="Reviews" asp-route-id="@Model.ElementAt(k).Id">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+
+                                        
+                                    } *@
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                             style="width: 40px; height: 40px; font-size: 20px;">
+                            @Model.ElementAt(k).UserName.Substring(0, 1).ToUpper()
+                        </div>
+
+                        <div class="ms-2 d-flex flex-column">
+                            <span> @Html.DisplayFor(modelItem => Model.ElementAt(k).UserName)</span>
+                            <div class="d-flex">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+
+                                    if (i <= Model.ElementAt(k).Rating)
+                                    {
+                                        <i class="fa-solid  fa-star" style="color:gold"></i>
+
+                                    }
+                                    else if (i > Model.ElementAt(k).Rating)
+                                    {
+                                        <i class="fa-regular fa-star"></i>
+                                    }
+                                }
+
+                            </div>
+
+                        </div>
+                                    
+                    </div>
+                    <p class="mt-3">"@Model.ElementAt(k).Description"</p>
+                    @*     <a href="#" class="text-primary">Read more</a> *@
+                    <div class="d-flex mt-4 justify-content-center ">
+                                    @if (User.FindFirstValue(ClaimTypes.Name) == Model.ElementAt(k).UserName)
+                                    {
+                                        <a asp-action="Delete" asp-controller="Reviews" asp-route-id="@Model.ElementAt(k).Id">
+                                            <i class="fa-solid fa-trash" ></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-controller="Reviews" asp-route-id="@Model.ElementAt(k).Id">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+
+
+                                    }
+                    </div>
+                        
+                              
+                </div>
+                
+                </div>
+            }
+                </div>
+                
+           
+            </div>
+            isFirst = false;
+        }
+    </div>
+
+
+    <button id="prevButton" class="carousel-control-prev" type="button">
+        <i class="fa-solid fa-chevron-left" style="color: black; font-size: 24px;"></i>
+    </button>
+
+    <button id="nextButton" class="carousel-control-next" type="button">
+        <i class="fa-solid fa-chevron-right" style="color: black; font-size: 24px;"></i>
+    </button>
+
+</div>
+
+@* <a href="/Reviews" class="btn btn-primary mt-3">Read all reviews</a> *@
+
+<style>
+    .carousel-inner {
+        display: flex;
+    }
+
+    .carousel-item {
+        text-align: center;
+    }
+
+    .card {
+        max-width: 350px;
+        margin: auto;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var carouselElement = document.getElementById('reviewCarousel');
+        var myCarousel = new bootstrap.Carousel(carouselElement, {
+            interval: false,
+            wrap: true 
+        });
+        document.getElementById('prevButton').addEventListener('click', function () {
+            myCarousel.prev();
+        });
+        document.getElementById('nextButton').addEventListener('click', function () {
+            myCarousel.next();
+        });
+    });
+</script>

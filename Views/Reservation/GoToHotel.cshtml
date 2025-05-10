@@ -1,0 +1,1406 @@
+﻿@using System.Security.Claims
+@using MVCBookingFinal_YARAB_.ViewModels
+@using System.Text.Json
+@model IEnumerable<List<MVCBookingFinal_YARAB_.Models.Room>>
+@inject MVCBookingFinal_YARAB_.IRepositories.ICityService _cities
+@inject MVCBookingFinal_YARAB_.IRepositories.ICountryService _countries
+@{
+
+    var hotels = ((IEnumerable<List<MVCBookingFinal_YARAB_.Models.Room>>)@ViewBag.AllHotels);
+    double max = hotels.Max(combination => combination.Sum(r => r.PricePerNight));
+    double min = hotels.Min(combination => combination.Sum(r => r.PricePerNight));
+
+
+
+    // if (min == max)
+    // {
+    //     max++;
+    // }
+    // Layout=null;
+    string mysrc = null;
+    Dictionary<string, string> countriesOrCities = new();
+
+    foreach (var item in _cities.GetAll())
+    {
+        countriesOrCities[item.Name] = item.Name;
+    }
+    foreach (var item in _countries.GetAll())
+    {
+        countriesOrCities[item.Name] = item.Name;
+    }
+    SelectList sl = new SelectList(countriesOrCities, "Key", "Value");
+
+
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.css">
+<script src="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.js"></script>
+<link rel="stylesheet" href="~/css/Rules.css">
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+
+    #priceSlider {
+        margin: 20px 0;
+        width: 50%;
+    }
+
+    .value-label {
+        margin: 0 10px;
+    }
+</style>
+
+@{
+    ViewData["Title"] = "GoToHotel";
+    var PriceRangeExists = ViewBag.HasCombinations;
+    Hotel hotel = ViewBag.Hotel;
+    double reviewsRating = default;
+    double count = default;
+    if (PriceRangeExists)
+    {
+        hotel = @Model.FirstOrDefault()?.FirstOrDefault()?.Hotel;
+        var query = hotel.Reviewed.Where(r => !r.isDeleted);
+        double sum = (double)query.Sum(r => r.Rating);
+        count = (double)query.Count();
+
+        if (count != 0)
+        {
+            reviewsRating = sum / count;
+        }
+        else
+        {
+            reviewsRating = 8.9;
+        }
+    }
+
+    // var currentprice;
+
+    //var ImagesList = hotel.Images.ToList();
+    var ImagesList = Model.FirstOrDefault().FirstOrDefault().Hotel.Images.Select(i => i.Image).ToList();
+    var roomImages = Model
+    .SelectMany(roomList => roomList)  // Flatten the list of lists of rooms
+    .SelectMany(room => room.Images)   // Flatten the list of images in each room
+    .Select(i => i.Image)
+    .ToList();
+    ImagesList.AddRange(roomImages);
+
+
+
+
+    var ReviewsList = hotel.Reviewed;
+    // var ImagesList = new List<string>()
+    // {
+    //     new string( "/ProductsImages/pyramids.jpg"),
+    //             new string( "/ProductsImages/eifel.jpeg"),
+
+    //     new string( "/ProductsImages/eifel.jpeg"),
+    //     new string( "/ProductsImages/luxor.jpg"),
+    //     new string( "/ProductsImages/hero-slider-1.jpg"),
+    //     new string( "/ProductsImages/Hero.jpg"),
+    //     new string( "/ProductsImages/hero-slider-2.jpg"),
+    //     new string( "/ProductsImages/Hero.jpg")
+    // };
+
+    // var ReviewsList = hotel.Reviewed;
+
+}
+
+
+<partial name="_modalPartial"></partial>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.js"></script>
+
+
+<script>
+    async function loadPriceSlider() {
+
+    let slider = document.getElementById("priceSlider");
+    const minValueLabel = document.getElementById('minValue');
+    const maxValueLabel = document.getElementById('maxValue');
+    const minPriceInput = document.getElementById('minPrice');
+    const maxPriceInput = document.getElementById('maxPrice');
+
+    // let min = parseInt(minPriceInput.value);
+    // let max = parseInt(maxPriceInput.value);
+
+    noUiSlider.create(slider, {
+    start: [@min, @max],
+    connect: true,
+    range: {
+    'min': @min,
+    'max': @max
+    }
+    });
+
+    // Update inputs on slider change
+    slider.noUiSlider.on("update", function (values) {
+    // document.getElementById("minPrice").value = Math.round(values[0]);
+    // document.getElementById("maxPrice").value = Math.round(values[1]);
+    //             minValueSpan.innerText = minVal;
+    // maxValueSpan.innerText = maxVal;
+
+    // minPriceInput.value = minVal;
+    // maxPriceInput.value = maxVal;
+    let minVal = Math.round(values[0]);
+    let maxVal = Math.round(values[1]);
+
+    minValueLabel.innerText = values[0];
+    maxValueLabel.innerText = values[1];
+
+    minPriceInput.value = values[0];
+    maxPriceInput.value = values[1];
+    });
+
+    // Update slider when input values change
+    document.getElementById("minPrice").addEventListener("change", function () {
+    slider.noUiSlider.set([this.value, null]);
+    });
+
+    document.getElementById("maxPrice").addEventListener("change", function () {
+    slider.noUiSlider.set([null, this.value]);
+    });
+    }
+
+    // Load slider when page loads
+    document.addEventListener("DOMContentLoaded", loadPriceSlider);
+
+</script>
+
+
+
+
+
+
+@* -------------------------------------------------------------------------------------------------------------------------------------------- *@
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hotel Booking UI</title>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+
+
+    </style>
+</head>
+
+
+
+
+<body>
+    <!--herrrreeee-->
+
+    <div class="container mt-4 w-50 flex-column">
+
+
+
+
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <span class="rating">
+                    @for (int i = 0; i < Model.FirstOrDefault().FirstOrDefault().Hotel.starRating; i++)
+                    {
+                        <i class="fa-solid fa-star " style="color:gold; font-size:15px;"></i>
+                    }
+                    @*  @if (reviewsRating % 1 >= 0.25 && reviewsRating % 1 <= 0.75)
+                    {
+                        <i class="fa-solid fa-star-half" style="color:gold; font-size:15px;"></i>
+                    }
+                    else if (reviewsRating % 1 > 0.75)
+                    {
+                        <i class="fa-solid fa-star" style="color:gold; font-size:15px;"></i>
+                    } *@
+                    &nbsp;
+                </span>
+                <span class="hotel-badge">Beachfront · Private beach</span>
+                <span class="hotel-badge">Airport shuttle</span>
+
+                <h2 class="hotel-title mt-2 fw-bold" style="font-family: 'Arial', sans-serif;">@hotel.Name</h2>
+                <p class="text-muted">
+                    <i class="fas fa-map-marker-alt"></i>
+                    @hotel.Address
+                    <a href="https://www.google.com/maps?q={@hotel.Latitude},{@hotel.Longitude}" class="text-primary">
+                        Excellent location - show map
+                    </a>
+                </p>
+            </div>
+
+            <!-- Right-side Favorites Section -->
+            <div class="ms-auto d-flex align-items-center mb-auto">
+                @if (!hotel.Favorites.Any(f => f.User.Id == User.FindFirstValue(ClaimTypes.NameIdentifier)))
+                {
+                    <a asp-action="Favor" asp-controller="Hotel" asp-route-hotelid="@hotel.id" asp-route-returntoreservation="true">
+                        <i class="fa-solid fa-heart fa-2x fs-2" style="color:darkgray;"></i>
+                    </a>
+                }
+                else
+                {
+                    <a asp-action="UnFavor" asp-controller="Hotel" asp-route-hotelid="@hotel.id" asp-route-returntoreservation="true">
+                        <i class="fa-solid fa-heart fa-2x fs-2" style="color:red;"></i>
+                    </a>
+                }
+                @* <span class="ms-2">@hotel.Favorites.Count() Favorites</span> *@
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <style>
+            .image-gallery {
+                --gap: 8px;
+            }
+
+            .main-image-container {
+                height: 450px;
+                overflow: hidden;
+            }
+
+            .side-image-container {
+                height: 218px;
+                overflow: hidden;
+            }
+
+            .thumbnail-container {
+                height: 100px;
+                overflow: hidden;
+            }
+
+            .more-photos {
+                height: 100px;
+                background: rgba(0, 0, 0, 0.7);
+                color: white;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                font-weight: 500;
+            }
+
+                .more-photos:hover {
+                    background: rgba(0, 0, 0, 0.8);
+                }
+
+            .object-fit-cover {
+                object-fit: cover;
+            }
+
+            img {
+                transition: transform 0.3s ease;
+            }
+
+                img:hover {
+                    transform: scale(1.03);
+                }
+
+            /* .carousel-control-prev,
+                                                .carousel-control-next {
+                                                    position: absolute;
+                                                    top: 50%;
+                                                    transform: translateY(-50%);
+                                                    width: 30px;
+                                                    height: 30px;
+                                                    opacity: 1;
+                                                }
+
+                                                .carousel-control-prev-icon,
+                                                .carousel-control-next-icon {
+                                                    filter: invert(100%);
+                                                    width: 20px;
+                                                    height: 20px;
+                                                }
+
+                                                .user-info {
+                                                    display: flex;
+                                                    align-items: center;
+                                                    justify-content: center;
+                                                    gap: 5px;
+                                                    font-size: 14px;
+                                                    font-weight: bold;
+                                                }
+
+                                                .user-avatar {
+                                                    width: 25px;
+                                                    height: 25px;
+                                                    border-radius: 50%;
+                                                    object-fit: cover;
+                                                }
+
+                                                .top-rated {
+                                                    display: flex;
+                                                    justify-content: space-between;
+                                                    align-items: center;
+                                                    background-color: #f8f9fa;
+                                                    padding: 10px;
+                                                    border-radius: 5px;
+                                                    margin-top: 10px;
+                                                    font-weight: bold;
+                                                }
+
+                                                    .top-rated .score {
+                                                        background-color: #fff;
+                                                        border: 1px solid #ddd;
+                                                        padding: 5px 8px;
+                                                        border-radius: 5px;
+                                                    }
+
+                                                .map-box {
+                                                    background-color: #f8f9fa;
+
+                                                    align-items: center;
+                                                    justify-content: center;
+
+                                                    border-radius: 10px;
+                                                    height: 50%;
+                                                    overflow: hidden;
+                                                    position: relative
+                                                } */
+
+
+            .rating-badge .score {
+                background: #1a374d;
+                color: white;
+                padding: 8px;
+                border-radius: 8px;
+                font-weight: bold;
+                font-size: 18px;
+            }
+
+            .review-box {
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                padding: 20px;
+                margin-bottom: 20px;
+                height: 290px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .carousel-item p {
+                margin-bottom: 15px;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+
+            .rating-badge {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-bottom: 15px;
+                margin-bottom: 15px;
+                border-bottom: 1px solid #eee;
+            }
+
+
+            .carousel-control-prev,
+            .carousel-control-next {
+                width: 30px;
+                height: 30px;
+                background: rgba(0,0,0,0.1);
+                border-radius: 50%;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+            .user-avatar {
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+            }
+
+            .carousel-control-prev-icon,
+            .carousel-control-next-icon {
+                width: 20px;
+                height: 20px;
+            }
+
+
+            #reviewCarousel {
+                flex: 1;
+                overflow: hidden;
+            }
+
+            .carousel-inner {
+                height: 100%;
+            }
+
+            .carousel-item {
+                height: 100%;
+                padding: 15px !important;
+                overflow-y: auto;
+            }
+
+
+
+                .carousel-item::-webkit-scrollbar {
+                    width: 6px;
+                }
+
+                .carousel-item::-webkit-scrollbar-thumb {
+                    background-color: #ccc;
+                    border-radius: 3px;
+                }
+
+
+            .map-box {
+                height: 250px;
+                border-radius: 12px;
+                overflow: hidden;
+            }
+
+            #map {
+                width: 100%;
+                height: 100%;
+            }
+
+            .Card {
+                margin: auto;
+            }
+        </style>
+
+
+
+
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="image-gallery">
+                        <!-- Main Images Section -->
+                        <div class="row g-2">
+                            <!-- Large Main Image -->
+                            <div class="col-lg-8">
+                                <div class="main-image-container">
+                                    <img class="img-fluid w-100 h-100 object-fit-cover rounded"
+                                         src="~/ProductsImages/@ImagesList[0]"
+                                         alt="Main Hotel Image"
+                                         style="max-height: 450px;">
+                                </div>
+                            </div>
+
+                            <!-- Side Images -->
+                            <div class="col-lg-4">
+                                <div class="d-flex flex-column gap-2 h-100">
+                                    @if (ImagesList.Count() > 2)
+                                    {
+                                        <div class="side-image-container flex-grow-1">
+                                            <img class="img-fluid w-100 h-100 object-fit-cover rounded"
+                                                 src="~/ProductsImages/@ImagesList[1]"
+                                                 alt="Room Image">
+                                        </div>
+                                        <div class="side-image-container flex-grow-1">
+                                            <img class="img-fluid w-100 h-100 object-fit-cover rounded"
+                                                 src="~/ProductsImages/@ImagesList[2]"
+                                                 alt="Spa Image">
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thumbnails Row -->
+                        <div class="row g-2 mt-2">
+                            @for (int i = 3; i < Math.Min(ImagesList.Count(), 8); i++)
+                            {
+                                <div class="col">
+                                    <div class="thumbnail-container">
+                                        <img class="img-fluid w-100 h-100 object-fit-cover rounded"
+                                             src="~/ProductsImages/@ImagesList[i]"
+                                             alt="Room Image">
+                                    </div>
+                                </div>
+                            }
+                            @if (ImagesList.Count() > 8)
+                            {
+                                <div class="col">
+                                    <div class="more-photos rounded d-flex align-items-center justify-content-center text-white">
+                                        <div class="text-center">
+                                            <span class="fs-4">+@(ImagesList.Count() - 8)</span><br>
+                                            <span class="small">photos</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="review-box mb-4">
+                        <div class="rating-badge">
+                            <div>
+                                <strong class="d-block">Fabulous</strong>
+                                <span class="text-muted">1,852 reviews</span>
+                            </div>
+                            <div class="score">@Math.Round(reviewsRating, 2)</div>
+                        </div>
+
+                        <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <p>"Quiet hotel, staff attitude, helpful staff.<br>We will come back again next business trip."</p>
+                                    <div class="user-info">
+                                        @* <img src="https://via.placeholder.com/25" alt="User" class="user-avatar"> *@
+                                        @* <span>Amy 🇪🇬 Egypt</span> *@
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <p>"Excellent location and clean rooms. The staff was very friendly and helpful."</p>
+                                    <div class="user-info">
+                                        @* <img src="https://via.placeholder.com/25" alt="User" class="user-avatar"> *@
+                                        @* <span>John 🇺🇸 USA</span> *@
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#reviewCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#reviewCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="map-box">
+                        <div id="map"></div>
+                    </div>
+                </div>
+
+
+
+                @* <div class="col-lg-3">
+
+                    <div class="review-box">
+
+                        <div class="rating-badge">
+                            <div class="d-flex flex-column justify-content-end align-bottom align-items-start">
+                                <strong>Fabulous</strong>
+                                <span class="text-muted">1,852 reviews</span>
+                            </div>
+                            <div class="score">@reviewsRating</div>
+                        </div>
+
+
+                        <div id="reviewCarousel" class="carousel slide mt-3" data-bs-ride="carousel">
+
+                            <div class="carousel-inner">
+                                <div class="carousel-item active" style="padding: 10px 20px 30px 40px;">
+                                    <p>“Quiet hotel, staff attitude, helpful staff.<br>We will come back again next business trip.”</p>
+                                    <div class="user-info">
+                                        <img src="https://via.placeholder.com/25" alt="User" class="user-avatar">
+                                        <span>Amy 🇪🇬 Egypt</span>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <p>“Excellent location and clean rooms. The staff was very friendly and helpful.”</p>
+                                    <div class="user-info">
+                                        <img src="https://via.placeholder.com/25" alt="User" class="user-avatar">
+                                        <span>John 🇺🇸 USA</span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <button class="carousel-control-prev" type="button" data-bs-target="#reviewCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#reviewCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="map-box ">
+                        <div id="map" style="width: 100%; height: 100%; cursor: pointer;"></div>
+                    </div>
+
+
+                </div>
+ *@
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Bottom row of images (5 images) -->
+            <!--COMBINATIONS START-->
+            @if (PriceRangeExists == true)
+            {
+
+                <div class=" col flex-wrap row">
+
+                    <div class="col-12">
+
+                        <div class="filter-container">
+                            <form method="post" asp-action="GoToHotel" class="filter-form">
+                                <div class="price-section">
+                                    <h2 class="section-title">
+                                        <i class="fas fa-dollar-sign"></i>
+                                        Price Range
+                                    </h2>
+
+                                    <div class="slider-container">
+                                        <div id="priceSlider"></div>
+                                        <div class="price-labels">
+                                            <div class="price-label">
+                                                <span class="label">Min</span>
+                                                <span class="value" id="minValue">$0</span>
+                                            </div>
+                                            <div class="price-label">
+                                                <span class="label">Max</span>
+                                                <span class="value" id="maxValue">$100,000</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <input type="hidden" id="minPrice" name="minPrice" value="0" />
+                                    <input type="hidden" id="maxPrice" name="maxPrice" value="100000" />
+                                    <input type="hidden" name="checkfilteration" value="true" />
+                                </div>
+
+                                <div class="sort-section">
+                                    <label for="sorting" class="sort-label">
+                                        <i class="fas fa-sort"></i>
+                                        Sort By
+                                    </label>
+                                    <select name="Sorting" id="sorting" class="sort-select" asp-items="@Html.GetEnumSelectList(typeof(sortBy))">
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="submit-btn">
+                                    <i class="fas fa-search"></i>
+                                    Apply Filters
+                                </button>
+                            </form>
+                        </div>
+
+                        <style>
+                            .filter-container {
+                                background: white;
+                                border-radius: 12px;
+                                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+                                padding: 30px;
+                                max-width: 600px;
+                                margin: 30px auto;
+                            }
+
+                            .filter-form {
+                                display: flex;
+                                flex-direction: column;
+                                gap: 25px;
+                            }
+
+                            .section-title {
+                                color: #1a374d;
+                                font-size: 20px;
+                                font-weight: 500;
+                                margin: 0 0 20px 0;
+                                display: flex;
+                                align-items: center;
+                                gap: 10px;
+                            }
+
+                            .slider-container {
+                                padding: 10px 15px 25px 15px;
+                            }
+
+                            /* noUiSlider Customization */
+                            #priceSlider {
+                                height: 6px;
+                                background: #e9ecef;
+                                border-radius: 3px;
+                            }
+
+                                #priceSlider .noUi-connect {
+                                    background: #1a374d;
+                                }
+
+                                #priceSlider .noUi-handle {
+                                    width: 20px;
+                                    height: 20px;
+                                    border-radius: 50%;
+                                    background: #1a374d;
+                                    border: 2px solid white;
+                                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                                    cursor: pointer;
+                                }
+
+                                    #priceSlider .noUi-handle::before,
+                                    #priceSlider .noUi-handle::after {
+                                        display: none;
+                                    }
+
+                            .price-labels {
+                                display: flex;
+                                justify-content: space-between;
+                                margin-top: 15px;
+                            }
+
+                            .price-label {
+                                display: flex;
+                                flex-direction: column;
+                                gap: 5px;
+                            }
+
+                                .price-label .label {
+                                    font-size: 12px;
+                                    color: #6c757d;
+                                }
+
+                                .price-label .value {
+                                    font-size: 16px;
+                                    font-weight: 500;
+                                    color: #1a374d;
+                                }
+
+                            .sort-section {
+                                display: flex;
+                                flex-direction: column;
+                                gap: 8px;
+                            }
+
+                            .sort-label {
+                                color: #1a374d;
+                                font-size: 14px;
+                                font-weight: 500;
+                                display: flex;
+                                align-items: center;
+                                gap: 8px;
+                            }
+
+                            .sort-select {
+                                padding: 12px;
+                                border: 1px solid #dee2e6;
+                                border-radius: 6px;
+                                font-size: 14px;
+                                color: #1a374d;
+                                background-color: white;
+                                cursor: pointer;
+                                transition: all 0.3s;
+                            }
+
+                                .sort-select:focus {
+                                    outline: none;
+                                    border-color: #1a374d;
+                                    box-shadow: 0 0 0 3px rgba(26, 55, 77, 0.1);
+                                }
+
+                            .submit-btn {
+                                background: #1a374d;
+                                color: white;
+                                border: none;
+                                padding: 14px;
+                                border-radius: 6px;
+                                font-size: 15px;
+                                font-weight: 500;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 8px;
+                                transition: all 0.3s;
+                            }
+
+                                .submit-btn:hover {
+                                    background: #142c3c;
+                                    transform: translateY(-1px);
+                                    box-shadow: 0 4px 12px rgba(26, 55, 77, 0.2);
+                                }
+                        </style>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var slider = document.getElementById('priceSlider');
+
+                                noUiSlider.create(slider, {
+                                    start: [@min, @max],
+                                    connect: true,
+                                    range: {
+                                        'min': @min,
+                                        'max': @max
+                                    },
+                                    format: {
+                                        to: function(value) {
+                                            return Math.round(value);
+                                        },
+                                        from: function(value) {
+                                            return Number(value);
+                                        }
+                                    }
+                                });
+
+                                var minValue = document.getElementById('minValue');
+                                var maxValue = document.getElementById('maxValue');
+                                var minPrice = document.getElementById('minPrice');
+                                var maxPrice = document.getElementById('maxPrice');
+
+                                slider.noUiSlider.on('update', function(values, handle) {
+                                    var value = values[handle];
+
+                                    if (handle) {
+                                        maxValue.textContent = '$' + Number(value).toLocaleString();
+                                        maxPrice.value = value;
+                                    } else {
+                                        minValue.textContent = '$' + Number(value).toLocaleString();
+                                        minPrice.value = value;
+                                    }
+                                });
+                            });
+                        </script>
+
+
+
+
+
+
+
+                    </div>
+
+                    @{
+                        var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve
+                };
+                    }
+
+
+                    <!--COMBINATIONS-->
+                    <!--CHAT MERGED THEM-->
+
+
+                    <div class=" w-100">
+                        @foreach (var combination in Model)
+                        {
+                            <div class="row ">
+                                <div class="mx-auto mb-3 w-100" style="border-radius: 15px;">
+                                    <div class="row ">
+
+                                        <!-- Image Section -->
+                                        <div class="col-md-4 p-3">
+                                            @if (combination.Any())
+                                            {
+                                                var firstRoom = combination.First();
+                                                var mysrcc = firstRoom.Images.FirstOrDefault()?.Image;
+                                                <a asp-action="GoToHotel" asp-route-id="@firstRoom.HotelId">
+                                                    @* "~/ProductsImages/@mysrcc" *@
+                                                    <img src="~/ProductsImages/@combination.FirstOrDefault()?.Images.FirstOrDefault().Image" class="img-fluid w-100 h-100"
+                                                         style="border-radius:15px; object-fit: cover;" alt="Room Image">
+                                                </a>
+                                            }
+                                        </div>
+
+                                        <!-- Card Body Section -->
+                                        <div class="col-md-8">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <!-- Name, Address, Description -->
+                                                    <div class="col-md-9">
+                                                        <a asp-action="GoToHotel" asp-route-id="@combination.First().HotelId" class="text-decoration-none">
+                                                            <h5 class="card-title">
+                                                                @combination.First().Hotel.Name
+                                                                @for (int i = 0; i < combination.First().Hotel.starRating; i++)
+                                                                {
+                                                                    <i class="fas fa-star" style="color: gold;"></i>
+                                                                }
+                                                            </h5>
+                                                        </a>
+                                                        <p class="card-text">@combination.First().Hotel.Address</p>
+                                                        <p class="card-text"><small class="text-muted">@combination.First().Hotel.Description</small></p>
+                                                    </div>
+
+                                                    <!-- Pricing and Reserve Button -->
+                                                    <div class="col-md-3 d-flex flex-column align-content-end align-items-end justify-content-between ">
+                                                        <p class="card-text pe-2 fw-bold">US$@combination.Sum(r => r.PricePerNight) </p>
+
+                                                        @*  <span style="font-size:10px">Please note that this price excludes additional features.</span> *@
+
+                                                        @* <a class="btn btn-sm mt-2" style="background-color: #1a374d; color: white;"
+                                                       asp-action="Reserve"
+                                                       asp-route-RoomsCombination="@JsonSerializer.Serialize(combination,options)">
+                                                        Reserve
+                                                    </a> *@
+
+                                                        @if (User.Identity.IsAuthenticated)
+                                                        {
+                                                            <form asp-action="Reserve" method="post">
+                                                                <input type="hidden" name="RoomsCombination" value="@JsonSerializer.Serialize(combination,options)" />
+
+                                                                <button type="submit" class="btn btn-success">Reserve</button>
+                                                            </form>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a asp-action="Login" asp-controller="Account" class="btn btn-success" style="gap:5px;">
+                                                                Reserve
+                                                            </a>
+                                                        }
+
+
+                                                    </div>
+                                                </div>
+                                            </div> <!-- End Card Body -->
+                                        </div>
+
+                                    </div> <!-- End Row -->
+                                </div> <!-- End Card -->
+                            </div> <!-- End Row -->
+                        }
+                    </div>
+
+
+
+                    <!--CHAT MERGED THEM-->
+                    <!--COMBINATIONS-->
+
+
+                </div>
+
+
+            }
+            else
+            {
+                <div class="col-4">
+
+                    <h1>@hotel.Name Hotel</h1>
+
+                    <header>
+
+                        <div style="background-image:url('@Url.Content($"/ProductsImages/{@hotel.Images.FirstOrDefault().Image}")'); width: 100%; height: 300px; background-size: cover;background-position: center; background-repeat: no-repeat;">
+                            <h4>
+                                <span style="font-size:12px">@reviewsRating / 5</span>
+                                @for (int i = 0; i < (int)reviewsRating; i++)
+                                {
+                                    <i class="fa-solid fa-star " style=" color:gold; font-size:15px;"></i>
+                                    @* <i class="fa-solid  fa-star" style="color:darkgoldenrod"></i> *@
+                                }
+                                @if (reviewsRating % 1 >= 0.25 && reviewsRating % 1 <= 0.75)
+                                {
+                                    <i class="fa-solid fa-star-half" style="color:gold; font-size:15px;"></i>
+                                }
+                                else if (reviewsRating % 1 > 0.75)
+                                {
+                                    <i class="fa-solid fa-star" style=" color:gold; font-size:15px;"></i>
+                                }
+                            </h4>
+                            <p> @count Reviews</p>
+
+
+
+                            @if (!hotel.Favorites.Any(f => f.User.Id == User.FindFirstValue(ClaimTypes.NameIdentifier)))
+                            {
+                                <a asp-action="Favor" asp-controller="Hotel" asp-route-hotelid="@hotel.id" asp-route-returntoreservation="true">
+                                    @* <i class="fa-solid fa-thumbs-up fa-3x"></i> *@
+                                    <i class="fa-solid fa-heart fa-2x" style="color:darkgray;"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-action="UnFavor" asp-controller="Hotel" asp-route-hotelid="@hotel.id" asp-route-returntoreservation="true">
+
+                                    <i class="fa-solid fa-heart fa-2x" style="color:red;"></i>
+                                </a>
+                            }
+                            <span>
+                                @hotel.Favorites.Count() Favorites
+                            </span>
+
+
+                        </div>
+                    </header>
+
+
+
+
+                    <form method="post" asp-action="GoToHotel">
+                        <h2 class="mt-5">Select Price Range</h2>
+                        <div id="priceSlider"></div>
+                        <div>
+                            <span class="value-label" id="minValue">0</span>
+                            <span class="value-label" id="maxValue">100000</span>
+                        </div>
+                        <input type="hidden" id="minPrice" name="minPrice" value="0" />
+                        <input type="hidden" id="maxPrice" name="maxPrice" value="100000" />
+                        <input type="hidden" name="checkfilteration" value="true" />
+                        <select name="Sorting" asp-items="@Html.GetEnumSelectList(typeof(sortBy))"></select>
+
+                        <button type="submit">Submit</button>
+                    </form>
+
+
+                </div>
+            }
+
+
+
+
+
+
+            <h3 class="fw-bold mt-5" style="font-family: 'Arial', sans-serif;">Guests Reviews</h3>
+            @*---------------------------------------------------------------------------------------------*@
+            @* <div>
+
+
+                <div id="reviewCarousel" class="carousel slide">
+
+
+                    @await Html.PartialAsync("_GetReview", hotel.Reviewed.Select(r => new ReviewViewModel2
+               {
+                   Id = r.Id,
+                   HotelId = r.HotelId,
+                   UserName = r.User.UserName,
+                   Rating = r.Rating,
+                   Description = r.Description
+
+               }))
+
+
+
+                    <button id="prevButton" class="carousel-control-prev" type="button">
+                        <i class="fa-solid fa-chevron-left" style="color: black; font-size: 24px;"></i>
+                    </button>
+
+
+
+                    <button id="nextButton" class="carousel-control-next" type="button">
+                        <i class="fa-solid fa-chevron-right" style="color: black; font-size: 24px;"></i>
+                    </button>
+
+                </div>
+
+
+                <div class="text-start mt-3">
+                    <a href="/Reviews" class="btn btn-primary">Read all reviews</a>
+                </div>
+
+
+            </div> *@
+            @*---------------------------------------------------------------------------------------------*@
+
+
+
+
+            <div id="topReviewCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach (var review in ReviewsList.Take(5))
+                    {
+                        <div class="carousel-item @(review == ReviewsList.First() ? "active" : "")">
+                            <div class="card shadow-sm p-3" style="border-radius: 15px;">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+                                         style="width: 40px; height: 40px; font-size: 20px;">
+                                        @(review.User.UserName.Substring(0, 1).ToUpper())
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-bold">@review.User.UserName</span>
+                                        <div class="d-flex">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= review.Rating)
+                                                {
+                                                    <i class="fa-solid fa-star" style="color:gold"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa-regular fa-star"></i>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mb-0">"@review.Description"</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#topReviewCarousel" data-bs-slide="prev">
+                    <i class="fa-solid fa-chevron-left" style="color: black; font-size: 24px;"></i>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#topReviewCarousel" data-bs-slide="next">
+                    <i class="fa-solid fa-chevron-right" style="color: black; font-size: 24px;"></i>
+                </button>
+            </div>
+        </div>
+
+
+
+        @*---------------------------------------------------------------------------------------------*@
+
+
+
+        @*             <style>
+                .carousel-inner {
+                    display: flex;
+                }
+
+                .carousel-item {
+                    text-align: center;
+                }
+
+                #cc {
+                    max-width: 350px;
+                    margin: auto;
+                }
+            </style> *@
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var carouselElement = document.getElementById('reviewCarousel');
+                var myCarousel = new bootstrap.Carousel(carouselElement, {
+                    interval: false,
+                    wrap: true // Allow looping
+                });
+                document.getElementById('prevButton').addEventListener('click', function () {
+                    myCarousel.prev();
+                });
+                document.getElementById('nextButton').addEventListener('click', function () {
+                    myCarousel.next();
+                });
+            });
+        </script>
+
+
+        <!--REVIEWS SLIDER END-->
+        <!--RULESSSS-->
+
+        <div class="">
+
+
+            <div class="mx-auto p-4 custom-card mt-5">
+                <h2 class="mb-3 fw-bold" style="font-family: 'Arial', sans-serif;">House rules</h2>
+                <p class="text-muted">New Eagles Aqua Park Resort takes special requests - add in the next step!</p>
+
+                <div class="rules">
+                    <div class="rule-item">
+                        <i class="fa-solid fa-sign-in-alt"></i>
+                        <div>
+                            <strong>Check-in</strong>
+                            <p>From 12:00 to 00:00</p>
+                        </div>
+                    </div>
+
+                    <div class="rule-item">
+                        <i class="fa-solid fa-sign-out-alt"></i>
+                        <div>
+                            <strong>Check-out</strong>
+                            <p>From 01:00 to 12:00</p>
+                        </div>
+                    </div>
+
+                    <div class="rule-item">
+                        <i class="fa-solid fa-info-circle"></i>
+                        <div>
+                            <strong>Cancellation/ prepayment</strong>
+                            <p>Cancellation and prepayment policies vary according to accommodation type.</p>
+                            <a href="#">Check conditions</a>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Children and Beds Section (Now Two Divs Side by Side) -->
+                    <div class="row align-items-start">
+                        <div class="col-md-3">
+                            <i class="fa-solid fa-child"></i>
+                            <strong>Children and beds</strong>
+                        </div>
+                        <div class="col-md-9">
+                            <p><strong>Child policies</strong></p>
+                            <p>Children of any age are welcome.</p>
+                            <p>To see correct prices and occupancy information, please add the number of children in your group and their ages to your search.</p>
+
+                            <p><strong>Cot and extra bed policies</strong></p>
+                            <table class="table table-bordered mt-2">
+                                <tr>
+                                    <td>0 - 2 years</td>
+                                    <td><i class="fa-solid fa-bed"></i> Cot upon request <strong>Free</strong></td>
+                                </tr>
+                            </table>
+                            <p>The number of extra beds and cots allowed is dependent on the option you choose. Please check your selected option for more information.</p>
+                            <p>All cots and extra beds are subject to availability.</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="rule-item">
+                        <i class="fa-solid fa-user"></i>
+                        <div>
+                            <strong>No age restriction</strong>
+                            <p>There is no age requirement for check-in.</p>
+                        </div>
+                    </div>
+
+                    <div class="rule-item">
+                        <i class="fa-solid fa-ban"></i>
+                        <div>
+                            <strong>Pets</strong>
+                            <p>Pets are not allowed.</p>
+                        </div>
+                    </div>
+
+                    <!-- Payment Methods (Icons Made Smaller + Added Stripe) -->
+                    <div class="rule-item">
+                        <strong>Accepted payment methods</strong>
+                        <div class="payment-images">
+                            <img src="~/ProductsImages/visa.png" alt="Visa">
+                            <img src="~/ProductsImages/MasterCard3.webp" alt="MasterCard">
+                            <img src="~/ProductsImages/stripe.png" alt="Stripe">
+                            <div class="cash-badge">Cash</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                @* <button class="btn btn-primary mt-3">Check available dates</button> *@
+            </div>
+        </div>
+
+        <!--RULESSSSSS-->
+
+
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function initMap() {
+            var lat = @hotel.Latitude;
+            var lng = @hotel.Longitude;
+            var hotelLocation = { lat: lat, lng: lng };
+
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: hotelLocation
+            });
+
+
+            var marker = new google.maps.Marker({
+                position: hotelLocation,
+                map: map,
+                title: "@hotel.Name"
+            });
+
+
+            map.addListener('click', function () {
+                window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+            });
+        }
+    </script>
+
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvkJ7TBXoLbCSNZ03ZOlkB6AQ-QXo8vEQ&callback=initMap"></script>
+    @* <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"> *@
+    @* <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> *@
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvkJ7TBXoLbCSNZ03ZOlkB6AQ-QXo8vEQ"></script>
+    <script>
+        var lat = @hotel.Latitude;
+            var lng = @hotel.Longitude;
+
+           function initMap() {
+               const location = { lat: lat, lng: lng };
+               const map = new google.maps.Map(document.getElementById("map"), {
+                   zoom: 15,
+                   center: location,
+               });
+               new google.maps.Marker({
+                   position: location,
+                   map: map,
+               });
+           }
+           window.onload = initMap;
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

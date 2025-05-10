@@ -1,0 +1,276 @@
+﻿@using System.Security.Claims
+@model MVCBookingFinal_YARAB_.Models.Hotel
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+    .hotel-details {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        padding: 30px;
+        margin: 20px 0;
+    }
+
+    .hotel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .hotel-title {
+        color: #2c3e50;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    .favorite-section {
+        text-align: right;
+    }
+
+    .favorite-count {
+        font-size: 1.1rem;
+        color: #666;
+        margin-left: 10px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+    }
+
+    .info-item {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 4px solid #007bff;
+    }
+
+    .info-label {
+        color: #666;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+
+    .info-value {
+        color: #2c3e50;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .map-container {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 30px 0;
+    }
+
+    #map {
+        width: 100% !important;
+        height: 500px !important;
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+
+    .images-gallery {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin: 20px 0;
+    }
+
+    .hotel-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+        transition: transform 0.3s;
+        cursor: pointer;
+    }
+
+        .hotel-image:hover {
+            transform: scale(1.1);
+        }
+
+    .section-title {
+        color: #2c3e50;
+        font-size: 1.8rem;
+        margin: 30px 0 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #007bff;
+    }
+
+    .action-buttons {
+        margin: 20px 0;
+    }
+
+    .btn-custom {
+        padding: 8px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        margin-right: 10px;
+        transition: all 0.3s;
+    }
+
+    .btn-edit {
+        background: #007bff;
+        color: white;
+    }
+
+    .btn-back {
+        background: #6c757d;
+        color: white;
+    }
+
+    .star-rating {
+        color: #ffd700;
+    }
+</style>
+
+<div class="hotel-details">
+    <div class="hotel-header">
+        <div>
+            <h1 class="hotel-title">@Model.Name</h1>
+            <div class="star-rating">
+                @for (int i = 0; i < Model.starRating; i++)
+                {
+                    <i class="fas fa-star"></i>
+                }
+            </div>
+        </div>
+        <div class="favorite-section">
+            @if (Model.Favorites.Count(f => f.User.Id == User.FindFirstValue(ClaimTypes.NameIdentifier)) == 0)
+            {
+                <a asp-action="Favor" asp-route-hotelid="@Model.id" class="text-decoration-none">
+                    <i class="fa-solid fa-heart fa-2x" style="color:#ddd; transition: all 0.3s;"></i>
+                </a>
+            }
+            else
+            {
+                <a asp-action="UnFavor" asp-route-hotelid="@Model.id" class="text-decoration-none">
+                    <i class="fa-solid fa-heart fa-2x" style="color:#ff4757; transition: all 0.3s;"></i>
+                </a>
+            }
+            <span class="favorite-count">@Model.Favorites.Count() Favorites</span>
+        </div>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-item">
+            <div class="info-label">Description</div>
+            <div class="info-value">@Model.Description</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Location</div>
+            <div class="info-value">@Model.city.Name, @Model.city.Country.Name</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Address</div>
+            <div class="info-value">@Model.Address</div>
+        </div>
+        @if (User.IsInRole("ADMIN"))
+        {
+            <div class="info-item">
+                <div class="info-label">Contact</div>
+                <div class="info-value">
+                    <div><i class="fas fa-envelope"></i> @Model.Email</div>
+                    <div><i class="fas fa-phone"></i> @Model.PhoneNumber</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="map-container">
+        <h3><i class="fas fa-map-marker-alt"></i> Hotel Location</h3>
+        <div id="map"></div>
+    </div>
+
+    <div class="section-title">Hotel Images</div>
+    <div class="images-gallery">
+        @foreach (var img in Model.Images)
+        {
+            <img src="~/ProductsImages/@img.Image"
+                 data-src="@Url.Content("~/ProductsImages/" + img.Image)"
+                 class="hotel-image"
+                 data-bs-toggle="modal"
+                 data-bs-target="#imageModal" />
+        }
+    </div>
+
+    <div class="action-buttons">
+        <a asp-action="Edit" asp-route-id="@Model?.id" class="btn-custom btn-edit">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <a asp-action="Index" class="btn-custom btn-back">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<div class="section-title">Available Rooms</div>
+@if (Model is not null && Model.Rooms is not null)
+{
+    <div class="row">
+        @foreach (var room in Model.Rooms)
+        {
+            <div class="col-md-6 mb-4">
+                <partial name="RoomView" model="room" />
+            </div>
+        }
+    </div>
+}
+
+<div class="section-title">Guest Reviews</div>
+<partial name="ReviewsView" model="@Model.Reviewed" />
+
+<partial name="ReportsView" model="@Model.Reported" />
+<partial name="_modalPartial" />
+
+<script>
+    function initMap() {
+        var lat = @Model.Latitude;
+        var lng = @Model.Longitude;
+        var hotelLocation = { lat: lat, lng: lng };
+
+        var mapOptions = {
+            zoom: 15,
+            center: hotelLocation,
+            mapTypeControl: true,
+            streetViewControl: true,
+            fullscreenControl: true,
+            styles: [
+                {
+                    featureType: "poi",
+                    elementType: "labels",
+                    stylers: [{ visibility: "on" }]
+                }
+            ]
+        };
+
+        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+        var marker = new google.maps.Marker({
+            position: hotelLocation,
+            map: map,
+            title: "@Model.Name",
+            animation: google.maps.Animation.DROP
+        });
+
+        var infoWindow = new google.maps.InfoWindow({
+            content: '<div style="padding: 10px;"><strong>@Model.Name</strong><br>@Model.Address</div>'
+        });
+
+        marker.addListener('click', function() {
+            infoWindow.open(map, marker);
+        });
+
+        map.addListener('click', function () {
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+        });
+    }
+</script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvkJ7TBXoLbCSNZ03ZOlkB6AQ-QXo8vEQ&callback=initMap"></script>

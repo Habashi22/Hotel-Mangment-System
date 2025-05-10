@@ -1,0 +1,240 @@
+﻿@model MVCBookingFinal_YARAB_.Models.City
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="details-container">
+    <h1 class="details-title">City Details</h1>
+
+    <div class="details-content">
+        <div class="image-section">
+            <img id="cityImage" src="~/ProductsImages/@Model.Image" alt="@Model.Name" />
+        </div>
+
+        <div class="info-section">
+            <div class="info-group">
+                <label>City Name</label>
+                <p>@Model.Name</p>
+            </div>
+
+            <div class="info-group">
+                <label>Country</label>
+                <p>@Model.Country.Name</p>
+            </div>
+
+            <div class="action-buttons">
+                @if (User.IsInRole("ADMIN"))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn-edit">
+                        <i class="fas fa-edit"></i>
+                        Edit
+                    </a>
+                }
+                <a asp-action="Index" class="btn-back">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .details-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    .details-title {
+        color: #1a374d;
+        margin-bottom: 30px;
+        font-size: 28px;
+        font-weight: 600;
+    }
+
+    .details-content {
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+    }
+
+    .image-section {
+        flex: 0 0 300px;
+    }
+
+        .image-section img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 150, 255, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+            .image-section img:hover {
+                transform: scale(1.02);
+            }
+
+    .info-section {
+        flex: 1;
+    }
+
+    .info-group {
+        margin-bottom: 25px;
+    }
+
+        .info-group label {
+            display: block;
+            color: #1a374d;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .info-group p {
+            font-size: 18px;
+            color: #333;
+            margin: 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .btn-edit, .btn-back {
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-edit {
+        background: #1a374d;
+        color: white;
+    }
+
+        .btn-edit:hover {
+            background: #142c3c;
+            transform: translateY(-1px);
+        }
+
+    .btn-back {
+        background: #f8f9fa;
+        color: #666;
+    }
+
+        .btn-back:hover {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .details-content
+
+    {
+        flex-direction: column;
+    }
+
+    .image-section {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+
+    }
+</style>
+
+<!-- Add Modal for Image -->
+<div id="imageModal" class="modal">
+    <span class="modal-close">&times;</span>
+    <img class="modal-content" id="modalImage">
+</div>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: auto;
+        height: auto;
+        max-width: 450px;
+        max-height: 450px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        animation: modalOpen 0.3s ease-out;
+    }
+
+    .modal-close {
+        position: absolute;
+        right: calc(50% - 240px);
+        top: calc(50% - 240px);
+        color: #fff;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        z-index: 1001;
+        background: rgba(0, 0, 0, 0.5);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<script>
+    // Modal functionality
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+    const img = document.getElementById("cityImage");
+    const closeBtn = document.getElementsByClassName("modal-close")[0];
+
+    img.onclick = function() {
+        modal.style.display = "block";
+        modalImg.src = this.src;
+    }
+
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>

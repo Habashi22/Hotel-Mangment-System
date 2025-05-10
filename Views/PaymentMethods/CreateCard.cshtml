@@ -1,0 +1,93 @@
+﻿ @model MVCBookingFinal_YARAB_.Models.CardPaymentMethod
+
+@{
+    ViewData["Title"] = "Create Card Payment";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg" style="background-color: #f8f9fa; border: none;">
+                <div class="card-header bg-primary text-white py-3">
+                    <h2 class="text-center mb-0">Add Card Payment Method</h2>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="CreateCard">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="CardNumber" class="form-label fw-bold text-dark"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white">
+                                    <i class="fas fa-credit-card"></i>
+                                </span>
+                                <input asp-for="CardNumber" class="form-control form-control-lg" placeholder="Enter card number" />
+                            </div>
+                            <span asp-validation-for="CardNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="ExpiryDate" class="form-label fw-bold text-dark"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white">
+                                    <i class="fas fa-calendar"></i>
+                                </span>
+                                <input asp-for="ExpiryDate" class="form-control form-control-lg" placeholder="MM/YY" />
+                            </div>
+                            <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="CVV" class="form-label fw-bold text-dark"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input asp-for="CVV" class="form-control form-control-lg" placeholder="Enter CVV" />
+                            </div>
+                            <span asp-validation-for="CVV" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus-circle me-2"></i>Add Card
+                            </button>
+                            <a asp-action="Index" class="btn btn-info text-white">
+                                <i class="fas fa-arrow-left me-2"></i>Back
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn {
+        padding: 8px 20px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #0d6efd;
+    }
+
+    .input-group-text {
+        border: none;
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+}

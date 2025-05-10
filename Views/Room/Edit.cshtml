@@ -1,0 +1,102 @@
+﻿@model MVCBookingFinal_YARAB_.ViewModels.RoomViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    // Layout = "HotelRooms";
+    List<RoomImage> TheImages = ViewBag.Images;
+
+}
+
+<div class="create-room-container">
+    <div class="create-card">
+        <div class="card-header">
+            <h1 class="card-title">
+                <i class="fas fa-edit"></i>
+                Edit Room
+            </h1>
+        </div>
+
+        <div class="card-body">
+
+<div class="container mb-5">
+    <h1>Edit</h1>
+
+
+    <hr />
+    <div class=" form col-12 mx-auto">
+        <div class="col-md-8">
+            <form asp-action="Edit" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <partial name="EditCreate"></partial>
+                <div class="form-group">
+                    <label asp-for="status" class="control-label"></label>
+                    <select asp-for="status" class="form-control" asp-items="@Html.GetEnumSelectList<RoomStatus>()"></select>
+                    <span asp-validation-for="status" class="text-danger"></span>
+                </div>
+                @if (TheImages is not null)
+                {
+                    @foreach (var image in TheImages)
+                    {
+                        <img src="~/ProductsImages/@image.Image"
+                             data-src="@Url.Content("~/ProductsImages/" + image.Image)"
+                             class="img-thumbnail img-clickable"
+                             data-bs-toggle="modal"
+                             data-bs-target="#imageModal"
+                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; cursor: pointer;" />
+                    }
+                }
+                <div class="form-group text-center mt-2">
+                    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+
+</div>
+        </div>
+    </div>
+</div>
+<style>
+    .create-room-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .create-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: #1a374d;
+        padding: 1.5rem;
+        color: white;
+    }
+
+    .card-title {
+        margin: 0;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    /* ... rest of your existing styles ... */
+</style>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<partial name="_modalPartial"></partial>

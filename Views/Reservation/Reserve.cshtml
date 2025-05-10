@@ -1,0 +1,433 @@
+﻿@model MVCBookingFinal_YARAB_.ViewModels.ReservationViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering;
+@using Microsoft.EntityFrameworkCore
+@using System.Text.Json
+
+@inject ApplicationDbContext context;
+@{
+
+    ViewData["Title"] = "Reserve";
+    var flag = false;
+    // var list= context.MealPlans.Include(m => m.plan).Select(m => new { m.Id, PlanText = m.plan.ToString() });
+    // var sl = new SelectList( ,"Id", "PlanText", Model.Plan);
+    if (Model is not null)
+    {
+        flag = true;
+
+    }
+    Hotel hotel = ViewBag.MyHotel;
+    var Amenityselectlist = Enum.GetValues(typeof(AmenityEnum))
+                   .Cast<AmenityEnum>()
+                   .Where(a => a != AmenityEnum.WiFi && hotel.Ameneties.Amenities.HasFlag(a))  // Optional: Filter out a specific enum value
+                   .Select(a => new SelectListItem
+                           {
+                               Value = ((int)a).ToString(),  // Enum integer value
+                               Text = a.ToString(),        // Enum string name
+                               // Selected = (((AmenityEnum)Model.amenity) == null) ? false : ((AmenityEnum)Model.amenity).HasFlag(a)
+                               Selected = (Model.amenity != null && ((AmenityEnum)Model.amenity).HasFlag(a))  // Ensure Model.amenity is not null before checking HasFlag
+
+                           })
+                   .ToList();
+    int x = 5;
+}
+@{
+    var options = new JsonSerializerOptions
+            {
+                ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve
+            };
+}
+
+
+@* <select asp-for="amenity" class="form-control" asp-items="Amenityselectlist" multiple="multiple"></select> *@
+@* <select name="amenity" asp-item></select> *@
+@* <h1>Reserve</h1>
+
+<h4>Reservation</h4>
+<hr /> *@
+@* <div class="container row">
+    <div class="col-md-4">
+        <form asp-action="Reserve">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Plan" class="control-label"></label>
+                <select asp-for="Plan" class="form-control" asp-items="@Html.GetEnumSelectList<mealPlan>()"></select>
+            </div>
+            <input asp-for="rooms" hidden/>
+            <div class="form-group">
+                <label asp-for="amenity" class="control-label"></label>
+                <select name="amenity" class="form-control" multiple="multiple">
+                    @foreach (var pair in Amenityselectlist)
+                    {
+                        @if (@pair.Selected)
+                        {
+                            <option value="@pair.Value" selected>@pair.Text</option>
+
+                        }
+                        else
+                        {
+                            <option value="@pair.Value">@pair.Text</option>
+
+                        } 
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="CheckInDate" class="control-label"></label>
+                <input asp-for="CheckInDate" class="form-control" />
+                <span asp-validation-for="CheckInDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CheckOutDate" class="control-label"></label>
+                <input asp-for="CheckOutDate" class="form-control" />
+                <span asp-validation-for="CheckOutDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PromoCode" class="control-label"></label>
+                <input asp-for="PromoCode" class="form-control" />
+                <span asp-validation-for="PromoCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+
+                <input type="submit" value="Reserve" formaction="/Reservation/ConfirmReserve" class="btn btn-primary" />
+        
+                <input type="submit" value="Save to draft" id="saveDraftButton" formaction="/Reservation/SaveinDraft" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div> *@
+
+
+<style>
+    .hotel-badge {
+        font-size: 14px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background: #ffcc00;
+        color: black;
+    }
+
+    .custom-btn-group .btn {
+        background-color: white;
+        color: #1a374d;
+        border-color: #1a374d;
+    }
+
+        .custom-btn-group .btn:hover {
+            background-color: #f0f0f0;
+            color: #1a374d;
+        }
+
+    .custom-btn-group .btn-check:checked + .btn {
+        background-color: #1a374d;
+        color: white;
+        border-color: #1a374d;
+    }
+
+</style>
+
+@* <div class="container mt-4">
+    <div class="text-center mb-4">
+
+
+        <div class="d-flex justify-content-center">
+            <h2 class="fw-bold pe-2">@hotel.Name</h2>
+            @for (int i = 0; i < hotel.starRating; i++)
+            {
+                <i class="fa-solid fa-star" style="color: gold;"></i>
+            }
+        </div>
+        <br />
+        <span class="hotel-badge">Beachfront · Private beach</span>
+        <span class="hotel-badge">Airport shuttle</span>
+        <p class="text-muted">@hotel.Address</p>
+
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4" style="border-radius: 15px;">
+                <h4 class="fw-bold mb-3">Your booking details</h4>
+
+                <div class="mb-3">
+                    <label class="fw-bold">Check-in</label>
+                    <input type="date" class="form-control" id="checkInDate">
+                </div>
+                <div class="mb-3">
+                    <label class="fw-bold">Check-out</label>
+                    <input type="date" class="form-control" id="checkOutDate">
+                </div>
+
+                <div class="mb-3">
+                    <label class="fw-bold">Meal Plan</label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="mealPlan" id="breakfast" value="Breakfast">
+                        <label class="btn btn-outline-primary" for="breakfast">Breakfast</label>
+
+                        <input type="radio" class="btn-check" name="mealPlan" id="halfBoard" value="Half Board">
+                        <label class="btn btn-outline-primary" for="halfBoard">Half Board</label>
+
+                        <input type="radio" class="btn-check" name="mealPlan" id="fullBoard" value="Full Board">
+                        <label class="btn btn-outline-primary" for="fullBoard">Full Board</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="fw-bold">Add Amenities</label>
+                    <div class="d-flex flex-wrap">
+                        @foreach (var pair in Amenityselectlist)
+                        {
+                            <div class="form-check me-3">
+                                <input class="form-check-input" type="checkbox" id="amenity_@pair.Value" value="@pair.Value">
+                                <label class="form-check-label" for="amenity_@pair.Value">@pair.Text</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="fw-bold">Promo Code</label>
+                    <input type="text" class="form-control w-50" id="promoCode" placeholder="Enter code">
+                </div>
+
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="#" class="btn btn-secondary w-50" style="border-radius: 10px;">
+                        <i class="fa-solid fa-save"></i> Save as Draft
+                    </a>
+                    <a href="#" class="btn btn-success w-50" style="border-radius: 10px;">
+                        <i class="fa-solid fa-check"></i> Proceed to payment
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ *@
+
+
+
+
+
+
+@*  <div class="container mt-4">
+    <div class="text-center mb-4">
+        <div class="d-flex justify-content-center">
+            <h2 class="fw-bold pe-2">@hotel.Name</h2>
+            @for (int i = 0; i < hotel.starRating; i++)
+            {
+                <i class="fa-solid fa-star" style="color: gold;"></i>
+            }
+        </div>
+        <br />
+        <span class="hotel-badge">Beachfront · Private beach</span>
+        <span class="hotel-badge">Airport shuttle</span>
+        <p class="text-muted">@hotel.Address</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4" style="border-radius: 15px;">
+                <h4 class="fw-bold mb-3">Your booking details</h4>
+
+                <form asp-action="Reserve">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold" asp-for="CheckInDate">Check-in</label>
+                        <input asp-for="CheckInDate" class="form-control" type="date" />
+                        <span asp-validation-for="CheckInDate" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold" asp-for="CheckOutDate">Check-out</label>
+                        <input asp-for="CheckOutDate" class="form-control" type="date" />
+                        <span asp-validation-for="CheckOutDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold" asp-for="Plan">Meal Plan</label>
+                        <select asp-for="Plan" class="form-control" asp-items="@Html.GetEnumSelectList<mealPlan>()"></select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Add Amenities</label>
+                        <select name="amenity" class="form-control" multiple="multiple">
+                            @foreach (var pair in Amenityselectlist)
+                            {
+                                @if (@pair.Selected)
+                                {
+                                    <option value="@pair.Value" selected>@pair.Text</option>
+
+                                }
+                                else
+                                {
+                                    <option value="@pair.Value">@pair.Text</option>
+
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold" asp-for="PromoCode">Promo Code</label>
+                        <input asp-for="PromoCode" class="form-control" placeholder="Enter code" />
+                        <span asp-validation-for="PromoCode" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="submit" formaction="/Reservation/SaveinDraft" class="btn btn-secondary w-50" style="border-radius: 10px;">
+                            <i class="fa-solid fa-save"></i> Save as Draft
+                        </button>
+                        <button type="submit" formaction="/Reservation/Reserve" class="btn btn-success w-50" style="border-radius: 10px;">
+                            <i class="fa-solid fa-check"></i> Proceed to Payment
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+ *@
+
+
+
+
+<div class="container mt-4">
+    <!-- Hotel Title Section -->
+    <div class="text-center mb-4">
+        <div class="d-flex justify-content-center">
+            <h2 class="fw-bold pe-2">@hotel.Name</h2>
+            @for (int i = 0; i < hotel.starRating; i++)
+            {
+                <i class="fa-solid fa-star" style="color: gold;"></i>
+            }
+        </div>
+
+        <span class="hotel-badge">Beachfront · Private beach</span>
+        <span class="hotel-badge">Airport shuttle</span>
+        <p class="text-muted mt-1">@hotel.Address</p>
+    </div>
+
+    <!-- Reservation Form -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4" style="border-radius: 15px;">
+                <h4 class="fw-bold mb-3 text-center" style="font-family: 'Arial', sans-serif;">Your booking details</h4>
+
+                <form asp-action="Reserve">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input asp-for="rooms" hidden />
+                    <!-- Date Selection -->
+                    <div class="mb-3">
+                        <label class="fw-bold" asp-for="CheckInDate">Check-in</label>
+                        <input asp-for="CheckInDate" class="form-control" type="date" />
+                        <span asp-validation-for="CheckInDate" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold" asp-for="CheckOutDate">Check-out</label>
+                        <input asp-for="CheckOutDate" class="form-control" type="date" />
+                        <span asp-validation-for="CheckOutDate" class="text-danger"></span>
+                    </div>
+
+                    <!-- Meal Plan Selection as Button Group -->
+                    <div class="mb-3">
+                        <label class="fw-bold">Meal Plan</label>
+                        <div class="btn-group w-100 custom-btn-group" role="group">
+                            @foreach (var value in Enum.GetValues(typeof(mealPlan)))
+                            {
+                                var meal = (mealPlan)value;
+                                <input type="radio" class="btn-check" asp-for="Plan" id="@meal" value="@meal">
+                                <label class="btn btn-outline-primary" for="@meal">@meal</label>
+                            }
+                        </div>
+                    </div>
+
+
+                    <!-- Amenities Selection as Checkboxes -->
+                    @*  <div class="mb-3">
+                        <label class="fw-bold">Add Amenities</label>
+                        <div class="d-flex flex-wrap">
+                            @foreach (var pair in Amenityselectlist)
+                            {
+                                <div class="form-check me-3">
+                                    <input asp-for="amenity" class="form-check-input" type="checkbox" name="amenity" id="amenity_@pair.Value" value="@pair.Value"
+                                    @(pair.Selected ? "checked=\"checked\"" : "")>
+                                    <label class="form-check-label" for="amenity_@pair.Value">@pair.Text</label>
+                                </div>
+                            }
+
+                        </div>
+                    </div> *@
+                    <div class="mb-3">
+                        <label class="fw-bold">Add Amenities</label>
+                        <select name="amenity" class="form-select" multiple style="height: 80px; border-radius: 10px;">
+                            @foreach (var pair in Amenityselectlist)
+                            {
+                                @if (@pair.Selected)
+                                {
+                                    <option value="@pair.Value" selected>@pair.Text</option>
+
+                                }
+                                else
+                                {
+                                    <option value="@pair.Value">@pair.Text</option>
+
+                                }
+                            }
+                        </select>
+                    </div>
+
+
+                    <!-- Promo Code Input -->
+                    <div class="mb-3">
+                        <label class="fw-bold" asp-for="PromoCode">Promo Code</label>
+                        <input asp-for="PromoCode" class="form-control" placeholder="Enter code" />
+                        <span asp-validation-for="PromoCode" class="text-danger"></span>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="submit" formaction="/Reservation/SaveinDraft" class="btn btn-secondary w-50" style="border-radius: 10px;">
+                            <i class="fa-solid fa-save"></i> Save as Draft
+                        </button>
+                        <button type="submit" formaction="/Reservation/ConfirmReserve" class="btn w-50" style="border-radius: 10px; background-color: #1a374d; color: white;">
+                            <i class="fa-solid fa-check"></i> Proceed to Payment
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div>
+    @* <a asp-action="Index">Back to List</a> *@
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("reservationForm");
+        const saveDraftButton = document.getElementById("saveDraftButton");
+
+        // Function to trigger "Save to draft"
+        function saveDraft() {
+            saveDraftButton.click();
+        }
+
+        // Listen for changes on all form inputs, selects, and textareas
+        form.querySelectorAll("input, select, textarea").forEach((element) => {
+            element.addEventListener("change", saveDraft); // When value changes
+            element.addEventListener("blur", saveDraft); // When user leaves field
+        });
+    });
+</script>

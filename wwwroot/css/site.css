@@ -1,0 +1,156 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+/*Cards*/
+.content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(500px));
+    gap: 10px;
+}
+.content .cardholder {
+    border-radius: 6px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 3px;        
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.content .cardholder .imageholder {  
+    max-width: 50%;
+    margin-right: 20px;
+}
+
+.content .cardholder .imageholder .image {
+    max-width: 100%;
+}
+/*.site-nav {*/
+    /* position: absolute; */
+    /* top: 0; */
+    /*background-color: #1A374D;
+    z-index: 9;
+    width: 100%;
+}*/
+.navbar {
+    background-color: white;
+    width: 100%;
+    padding-top: 0;
+    padding-bottom: 0;
+/*    position:absolute;
+    top:30px;
+    left:0;*/
+}
+
+.navbar .navbar-brand {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand img {
+    height: 50px; /* Adjust if needed */
+    width: 50px; /* Adjust if needed */
+    object-fit: cover;
+}
+
+.navbar-brand span {
+    font-weight: bold;
+    color: #1A374D; /* Your provided hex color */
+}
+#Users-types {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+.inboxconfirmemail,
+.inbox {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    justify-content: center;
+    align-items: center;
+    margin: 100px auto;
+}
+
+
+.inbox a {
+    color: white;
+    font-size: 16px;
+}
+.editprofile{
+gap:20px;
+flex-direction: column;
+}
+.upperform {
+    display:flex;
+    gap:25px;
+}
+.editaccount,
+.createcity{
+    margin: 0px auto 30px;
+}
+.forgetpassword {
+
+    margin: 100px auto;
+
+} 
+.forgetpassword h1 {
+    text-align: center;
+}
+.forgetpasswordform,
+.editaccountform,
+.loginform {
+    margin: 0 auto;
+}
+    .loginform{
+        margin-bottom:30px;
+    }
+    .googleicon {
+        font-size: 18px;
+    }
+
+.Externallogincontainer {
+    display:flex;
+    gap:10px;
+}
+.linkcontainer {
+    display:flex;
+    justify-content:space-between;
+}
+.registerformcontainer{
+    display:flex;
+    gap:20px;
+
+}
+.malakregister{
+    margin:0 auto;
+}
+
+.TotalPayment{
+    /*margin-left:220px;*/
+    text-align:center;
+}
+
+

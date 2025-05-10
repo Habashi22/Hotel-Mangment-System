@@ -1,0 +1,295 @@
+﻿@model IEnumerable<MVCBookingFinal_YARAB_.Models.PromoCode>
+
+@{
+    ViewData["Title"] = "Index";
+    // Layout = "HotelRooms";
+}
+<div class="promo-container">
+    <div class="page-header">
+        <h1 class="page-title">Promo Codes</h1>
+        <a asp-action="Create" class="create-btn">
+            <i class="fas fa-plus"></i>
+            New Promo Code
+        </a>
+    </div>
+
+    <div class="search-section">
+        @using (Html.BeginForm())
+        {
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="Users-types" name="id" list="Users" placeholder="Search by user..." class="search-input" />
+                <datalist id="Users">
+                    @foreach (var user in (SelectList)ViewBag.Users)
+                    {
+                        <option value="@user.Value">@user.Text</option>
+                    }
+                </datalist>
+                <button type="submit" class="search-btn">Search</button>
+            </div>
+        }
+    </div>
+
+    <div class="table-container">
+        <table class="promo-table">
+            <thead>
+                <tr>
+                    <th>
+                        <div class="th-content">
+                            <i class="fas fa-ticket-alt th-icon"></i>
+                            Code
+                        </div>
+                    </th>
+                    <th>
+                        <div class="th-content">
+                            <i class="fas fa-toggle-on th-icon"></i>
+                            Status
+                        </div>
+                    </th>
+                    <th>
+                        <div class="th-content">
+                            <i class="fas fa-calendar th-icon"></i>
+                            Expiry Date
+                        </div>
+                    </th>
+                    <th>
+                        <div class="th-content">
+                            <i class="fas fa-percentage th-icon"></i>
+                            Discount
+                        </div>
+                    </th>
+                    <th>
+                        <div class="th-content">
+                            <i class="fas fa-user th-icon"></i>
+                            Added By
+                        </div>
+                    </th>
+                    <th>
+                        <div class="th-content">
+                            <i class="fas fa-chart-bar th-icon"></i>
+                            Usage Count
+                        </div>
+                    </th>
+                    <th>
+                        <div class="th-content">
+                            <i class="fas fa-cog th-icon"></i>
+                            Actions
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><span class="promo-code">@item.Code</span></td>
+                        <td>
+                            <span class="status-badge @(item.IsActive ? "active" : "inactive")">
+                                @(item.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </td>
+                        <td>@item.ExpiryDate.ToString("MMM dd, yyyy")</td>
+                        <td><span class="discount">@item.Discount%</span></td>
+                        <td>@item.AddingUser.FirstName</td>
+                        <td>
+                            <span class="usage-count">
+                                <i class="fas fa-check-circle"></i>
+                                @item.UsedTimes.Count()
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action btn-edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn-action btn-view">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .promo-container {
+        padding: 20px;
+        width:80%;
+        margin:0 auto;
+    }
+
+    .page-header {
+        background: #1a374d;
+        color: white;
+        padding: 25px 30px;
+        margin-bottom: 30px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 500;
+    }
+
+    .create-btn {
+        background: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+
+        .create-btn:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+
+    .search-section {
+        margin-bottom: 30px;
+    }
+
+    .search-wrapper {
+        position: relative;
+        max-width: 500px;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 12px 12px 12px 40px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    .search-btn {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #1a374d;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .th-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 20px;
+    }
+
+    .th-icon {
+        color: #1a374d;
+        font-size: 16px;
+    }
+
+    .promo-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .promo-table thead {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .promo-table th {
+            color: #1a374d;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .promo-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+    .promo-code {
+        font-family: monospace;
+        font-weight: 600;
+        color: #1a374d;
+    }
+
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+        .status-badge.active {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-badge.inactive {
+            background: #dc3545;
+            color: white;
+        }
+
+    .discount {
+        font-weight: 600;
+        color: #1a374d;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+    .btn-edit {
+        background: #1a374d;
+    }
+
+    .btn-view {
+        background: #17a2b8;
+    }
+
+    .btn-delete {
+        background: #dc3545;
+    }
+
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+</style>

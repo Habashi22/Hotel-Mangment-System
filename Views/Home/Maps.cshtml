@@ -1,0 +1,137 @@
+﻿<partial name="MyMap"></partial>
+@* <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Location on Google Map</title>
+    <!-- Load Google Maps API with Places library -->
+    @* <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script> *@
+@* 
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6Tks8vLX2peQPCVbkSXZIkBKuqa2yEPw&libraries=places&callback=initMap" async defer></script>
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+
+        #latitude, #longitude {
+            margin-top: 10px;
+        }
+
+        #searchBox {
+            margin-bottom: 10px;
+            width: 300px;a
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <h3>Click on the map to choose a location</h3>
+    <input id="searchBox" type="text" placeholder="Search by country or city">
+    <div id="map"></div>
+    <p>Latitude: <input type="text" id="latitude" readonly></p>
+    <p>Longitude: <input type="text" id="longitude" readonly></p>
+    <button id="submit" onclick="submitCoordinates()">Submit Coordinates</button>
+
+    <script>
+        let map, marker, searchBox;
+
+        function initMap() {
+            // Initial map setup
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 37.7749, lng: -122.4194 }, // Default location (San Francisco)
+                zoom: 12
+            });
+
+            marker = new google.maps.Marker({
+                map: map,
+                draggable: true,
+                position: map.getCenter()
+            });
+
+            // Search Box functionality
+            searchBox = new google.maps.places.SearchBox(document.getElementById('searchBox'));
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(document.getElementById('searchBox'));
+
+            // Bias the SearchBox results to the map's viewport
+            map.addListener('bounds_changed', function() {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            // When the user selects a place from the suggestions
+            searchBox.addListener('places_changed', function() {
+                const places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+
+                // Clear previous markers
+                marker.setMap(null);
+
+                // Get the details of the selected place
+                const place = places[0];
+                const lat = place.geometry.location.lat();
+                const lng = place.geometry.location.lng();
+
+                // Update the marker and the map center
+                marker.setPosition(place.geometry.location);
+                map.setCenter(place.geometry.location);
+
+                // Update the input fields with the new coordinates
+                document.getElementById('latitude').value = lat;
+                document.getElementById('longitude').value = lng;
+            });
+
+            // When the user clicks on the map, update the marker and input fields
+            google.maps.event.addListener(map, 'click', function(event) {
+                const lat = event.latLng.lat();
+                const lng = event.latLng.lng();
+
+                marker.setPosition(event.latLng);
+                document.getElementById('latitude').value = lat;
+                document.getElementById('longitude').value = lng;
+            });
+
+            // When the user drags the marker, update the input fields
+            google.maps.event.addListener(marker, 'dragend', function() {
+                const lat = marker.getPosition().lat();
+                const lng = marker.getPosition().lng();
+                document.getElementById('latitude').value = lat;
+                document.getElementById('longitude').value = lng;
+            });
+        }
+
+        function submitCoordinates() {
+            const lat = document.getElementById('latitude').value;
+            const lng = document.getElementById('longitude').value;
+
+            if (!lat || !lng) {
+                alert('Please select a location on the map!');
+                return;
+            }
+
+            // Send the selected coordinates to your C# backend (AJAX or Fetch)
+            fetch('/api/coordinates/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ latitude: lat, longitude: lng })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Coordinates submitted successfully!');
+            })
+            .catch(error => {
+                console.error('Error submitting coordinates:', error);
+            });
+        }
+    </script>
+
+</body>
+</html>
+*@

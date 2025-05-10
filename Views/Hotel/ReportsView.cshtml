@@ -1,0 +1,31 @@
+﻿@model IEnumerable<MVCBookingFinal_YARAB_.Models.Report>
+@if(User.IsInRole("Admin".ToUpper())){
+    <h2>Reports</h2>
+@if (Model is not null)
+{
+    @foreach (var report in Model)
+    {
+
+        <div class="card text-white bg-secondary mb-3" style="max-width: 20rem;">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-4">
+
+                        @report.User.UserName
+                    </div>
+                    <div class="col-4">
+
+                        @report.ReviewDate
+                    </div>
+                 
+                </div>
+            </div>
+            <div class="card-body">
+                <h4>@report.Complaint</h4>
+            </div>
+
+        </div>
+    }
+}
+}

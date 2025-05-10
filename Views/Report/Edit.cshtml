@@ -1,0 +1,58 @@
+﻿@model MVCBookingFinal_YARAB_.ViewModels.ReportViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<hr />
+<div class="row justify-content-center">
+    <div class="card shadow-lg p-4 rounded-4" style="width: 450px; background-color: #f8f9fa; border: none;">
+        <h2 class="text-center mt-3" >Edit Report</h2>
+        <hr />
+       
+        <form asp-action="Edit">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                <label asp-for="HotelId" class="form-label fw-bold">Hotel Name</label>
+                <select asp-for="HotelId" class="form-select border-2" asp-items="ViewBag.HotelId"></select>
+                <span asp-validation-for="HotelId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group ">
+                <label asp-for="Complaint" class="form-label fw-bold"></label>
+                <input asp-for="Complaint" class="form-control border-2" placeholder="Enter your complaint..." />
+                <span asp-validation-for="Complaint" class="text-danger"></span>
+            </div>
+
+            <div class="form-group d-grid gap-2" id="formmbtn">
+                <button type="submit" class="btn btn-primary px-4 py-2  shadow-sm">Save</button>
+            </div>
+            <div class="text-center mt-3">
+                <a asp-action="Index" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<style>
+    h2 {
+        color: #1A374D;
+      
+    }
+
+    .formmbtn {
+        width: 50px;
+    }
+
+    .btn-primary:hover {
+        background-color: #406882;
+    }
+</style>

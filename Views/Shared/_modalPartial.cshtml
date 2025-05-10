@@ -1,0 +1,90 @@
+﻿<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0 position-relative">
+            <div class="modal-body text-center">
+
+                <button id="prevImage" class="btn btn-dark position-absolute start-0 top-50 translate-middle-y">
+                    <i class="fa-solid fa-arrow-left" style="color:white"></i>
+                </button>
+
+
+                <img id="modalImage" class="img-fluid" />
+
+
+                <button id="nextImage" class="btn btn-dark position-absolute end-0 top-50 translate-middle-y">
+                    <i class="fa-solid fa-arrow-right" style="color:white"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* <script>
+    document.addEventListener("DOMContentLoaded", function () {
+         let modalElement = document.getElementById('imageModal');
+         let modalImage = document.getElementById('modalImage');
+         let bootstrapModal = new bootstrap.Modal(modalElement); // Initialize Bootstrap Modal
+
+         document.querySelectorAll('.img-clickable').forEach(img => {
+             img.addEventListener('click', function () {
+                 modalImage.src = this.getAttribute('data-src'); // Set modal image src
+                 bootstrapModal.show(); // Open the modal
+             });
+         });
+
+         // Close modal when clicking outside the image
+         modalElement.addEventListener('click', function (event) {
+             if (event.target === modalElement) {
+                 bootstrapModal.hide();
+             }
+         });
+     });
+</script> *@
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let modalElement = document.getElementById('imageModal');
+        let modalImage = document.getElementById('modalImage');
+        let bootstrapModal = new bootstrap.Modal(modalElement);
+
+        let images = []; // Store image URLs
+        let currentIndex = 0; // Track current image index
+
+        // Get all images in the table
+        document.querySelectorAll('.img-clickable').forEach((img, index) => {
+            images.push(img.getAttribute('src')); // Store image source
+            img.addEventListener('click', function () {
+                currentIndex = index; // Set clicked image index
+                updateModalImage(); // Update modal with selected image
+                bootstrapModal.show(); // Show modal
+            });
+        });
+
+        // Function to update modal image
+        function updateModalImage() {
+            if (images.length > 0) {
+                modalImage.src = images[currentIndex];
+            }
+        }
+
+        // Navigate to Previous Image
+        document.getElementById('prevImage').addEventListener('click', function (event) {
+            event.stopPropagation(); // Prevent modal from closing
+            currentIndex = (currentIndex - 1 + images.length) % images.length; // Loop back
+            updateModalImage();
+        });
+
+        // Navigate to Next Image
+        document.getElementById('nextImage').addEventListener('click', function (event) {
+            event.stopPropagation(); // Prevent modal from closing
+            currentIndex = (currentIndex + 1) % images.length; // Loop forward
+            updateModalImage();
+        });
+
+        // Close modal when clicking outside the image
+        modalElement.addEventListener('click', function (event) {
+            if (!modalImage.contains(event.target)) {
+                bootstrapModal.hide();
+            }
+        });
+    });
+</script>

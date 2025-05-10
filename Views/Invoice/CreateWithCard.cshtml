@@ -1,0 +1,54 @@
+﻿@model MVCBookingFinal_YARAB_.ViewModels.CardPaymentViewModel
+
+@{
+    ViewData["Title"] = "CreateWithCard";
+}
+<div class="container">
+<h1>Pay With Card</h1>
+
+<hr />
+    <h3 class="TotalPayment">
+    TOTAL :@ViewBag.Amount <i class="fa-solid fa-dollar-sign"></i>
+</h3>
+
+<div class="row form col-8 mx-auto">
+    <div class="col-md-4">
+        <form asp-action="CreateWithCard">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="row justify-content-center">
+            <div class="form-group col-12">
+                <label asp-for="CardNumber" class="control-label"></label>
+                <i class="fa-solid fa-money-check-dollar"></i>
+                <input asp-for="CardNumber" class="form-control" />
+                <span asp-validation-for="CardNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group col-6">
+                <label asp-for="ExpiryDate" class="control-label"></label>
+                        <input asp-for="ExpiryDate" class="form-control" autocomplete="new-password" />
+
+                <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+                @* <label for="PaymentDate">Payment Date (MM/yy):</label> *@
+        @*         <input type="text" id="ExpiryDate" name="ExpiryDate" asp-for="ExpiryDate"
+                      
+                       value="@Model?.ExpiryDate?? mm/yy"
+                       placeholder="MM/yy" required />
+ *@
+            </div>
+            <div class="form-group col-6">
+                <label asp-for="CVV" class="control-label"></label>
+                <input asp-for="CVV" class="form-control" />
+                <span asp-validation-for="CVV" class="text-danger"></span>
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" value="Reserve Now" class="btn btn-primary" />
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,254 @@
+﻿@model IEnumerable<MVCBookingFinal_YARAB_.Models.UsedPromoCodes>
+
+@{
+    Layout = "_NavFooter";
+}
+
+<div class="used-promos-container">
+    <div class="page-header">
+        <h1 class="page-title">Used Promo Codes</h1>
+    </div>
+
+    <div class="search-section">
+        <div class="search-card">
+            <h3 class="search-title">Search Filters</h3>
+            <div class="search-forms">
+                @using (Html.BeginForm("Index", "UsedPromoCode", FormMethod.Post, new { @class = "search-form" }))
+                {
+                    <div class="input-group">
+                        <i class="fas fa-ticket-alt input-icon"></i>
+                        <input type="text" id="codes-types" name="id" list="Codes" placeholder="Search by promo code..." class="search-input" />
+                        <datalist id="Codes">
+                            @foreach (var code in (SelectList)ViewBag.Codes)
+                            {
+                                <option value="@code.Value">@code.Text</option>
+                            }
+                        </datalist>
+                    </div>
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i>
+                        Search Codes
+                    </button>
+                }
+
+                @using (Html.BeginForm("GetAllUsedBySameUser", "UsedPromoCode", FormMethod.Post, new { @class = "search-form" }))
+                {
+                    <div class="input-group">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="users-types" name="userid" list="Users" placeholder="Search by user..." class="search-input" />
+                        <datalist id="Users">
+                            @foreach (var code in (SelectList)ViewBag.Users)
+                            {
+                                <option value="@code.Value">@code.Text</option>
+                            }
+                        </datalist>
+                    </div>
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i>
+                        Search Users
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>
+                        <div class="th-content">
+                            <i class="fas fa-ticket-alt th-icon"></i>
+                            Promo Code
+                        </div>
+                    </th>
+                    <th>
+                        <div class="th-content">
+                            <i class="fas fa-user th-icon"></i>
+                            User
+                        </div>
+                    </th>
+                    @if (ViewBag.Showreservations)
+                    {
+                        <th>
+                            <div class="th-content">
+                                <i class="fas fa-bookmark th-icon"></i>
+                                Reservation
+                            </div>
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><span class="promo-code">@item.PromoCode.Code</span></td>
+                        <td>@item.User.UserName</td>
+                        @if (ViewBag.Showreservations is not null)
+                        {
+                            <td>@item.Reservation.Id</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+  
+</div>
+
+<style>
+    .used-promos-container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        background: #1a374d;
+        color: white;
+        padding: 25px 30px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 500;
+    }
+
+    .search-section {
+        margin-bottom: 30px;
+    }
+
+    .search-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .search-title {
+        color: #1a374d;
+        font-size: 18px;
+        margin: 0 0 20px 0;
+    }
+
+    .search-forms {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 10px;
+    }
+
+    .input-group {
+        position: relative;
+        flex: 1;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 12px 12px 12px 40px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    .search-btn {
+        background: #1a374d;
+        color: white;
+        border: none;
+        padding: 0 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+
+        .search-btn:hover {
+            background: #142c3c;
+        }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .th-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 20px;
+    }
+
+    .th-icon {
+        color: #1a374d;
+    }
+
+    .data-table th {
+        background: #f8f9fa;
+        color: #1a374d;
+        font-weight: 600;
+        text-align: left;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .data-table td {
+        padding: 16px 20px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .promo-code {
+        font-family: monospace;
+        font-weight: 600;
+        color: #1a374d;
+        background: #e9ecef;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+
+    .action-links {
+        margin-top: 20px;
+        display: flex;
+        gap: 15px;
+    }
+
+    .action-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #f8f9fa;
+        color: #1a374d;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+        .action-link:hover {
+            background: #e2e6ea;
+            transform: translateY(-1px);
+        }
+</style>

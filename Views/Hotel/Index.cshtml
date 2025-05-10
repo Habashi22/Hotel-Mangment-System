@@ -1,0 +1,244 @@
+﻿@model IEnumerable<MVCBookingFinal_YARAB_.Models.Hotel>
+
+<style>
+    .table-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin: 20px auto;
+        width:90%;
+    }
+
+    .table thead {
+        background-color: #1a237e;
+        color: white;
+    }
+
+        .table thead th {
+            padding: 15px;
+            font-weight: 500;
+            border: none;
+        }
+
+    .table tbody tr {
+        transition: all 0.3s;
+    }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+    .table td {
+        padding: 12px;
+        vertical-align: middle;
+    }
+
+    .hotel-image {
+        transition: transform 0.3s;
+    }
+
+        .hotel-image:hover {
+            transform: scale(1.2);
+        }
+
+    .action-buttons a {
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: white;
+        text-decoration: none;
+        margin-right: 5px;
+        transition: all 0.3s;
+    }
+
+    .btn-edit {
+        background-color: #1976d2;
+    }
+
+    .btn-details {
+        background-color: #388e3c;
+    }
+
+    .btn-delete {
+        background-color: #d32f2f;
+    }
+
+    .create-new {
+        background-color: #1a237e;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 20px;
+        transition: all 0.3s;
+    }
+
+        .create-new:hover {
+            background-color: #283593;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .amenity-tag {
+        background-color: #e3f2fd;
+        color: #1565c0;
+        padding: 4px 8px;
+        border-radius: 4px;
+        margin: 2px;
+        display: inline-block;
+        font-size: 0.9rem;
+    }
+
+    .page-title {
+        color: #1a237e;
+        margin-bottom: 30px;
+        font-weight: 600;
+    }
+
+    .action-icon {
+        padding: 8px;
+        border-radius: 5px;
+        color: white;
+        margin: 0 3px;
+        transition: all 0.2s;
+    }
+
+    .edit-icon {
+        background-color: #2196F3;
+    }
+
+    .details-icon {
+        background-color: #4CAF50;
+    }
+
+    .delete-icon {
+        background-color: #F44336;
+    }
+
+    .action-icon:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+
+    .amenity-icon {
+        margin-right: 5px;
+        color: #1a237e;
+    }
+
+    .contact-info {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin: 3px 0;
+    }
+
+    .contact-icon {
+        color: #1a237e;
+        width: 20px;
+    }
+</style>
+
+<h1 class="page-title">Hotels Management</h1>
+
+<a asp-action="Create" class="create-new">
+    <i class="fas fa-plus"></i> Create New Hotel
+</a>
+
+<div class="table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Name)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>Location</th>
+                <th>Rating</th>
+                <th>Contact</th>
+                @* <th>Amenities</th> *@
+                <th>Images</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var myflags = Enum.GetValues(typeof(AmenityEnum))
+                .Cast<AmenityEnum>()
+                .Where(amenity => item.Ameneties.Amenities.HasFlag(amenity))
+                .ToList();
+                <tr>
+                    <td><strong>@item.Name</strong></td>
+                    <td>@(item.Description?.Length > 50 ? item.Description.Substring(0, 47) + "..." : item.Description)</td>
+                    <td>
+                        <div>@item.city.Name</div>
+                        <small class="text-muted">@item.city.Country.Name</small>
+                    </td>
+                    <td>
+                        @for (int i = 0; i < item.starRating; i++)
+                        {
+                            <i class="fas fa-star" style="color: #ffd700"></i>
+                        }
+                        @for (int i = item.starRating; i < 7; i++)
+                        {
+                            <i class="far fa-star" style="color: #ffd700"></i>
+                        }
+                    </td>
+                    <td>
+                        <div><i class="fas fa-envelope"></i> @item.Email</div>
+                        <div><i class="fas fa-phone"></i> @item.PhoneNumber</div>
+                    </td>
+                   @*  <td>
+                        @foreach (var flag in myflags)
+                        {
+                            <div class="amenity-tag">
+                                @switch (flag.ToString())
+                                {
+                                    case "WiFi":
+                                        <i class="fas fa-wifi amenity-icon"></i>
+                                        break;
+                                    case "Spa":
+                                        <i class="fas fa-spa amenity-icon"></i>
+                                        break;
+                                    case "Restaurant":
+                                        <i class="fas fa-utensils amenity-icon"></i>
+                                        break;
+                                    case "Laundry":
+                                        <i class="fas fa-washing-machine amenity-icon"></i>
+                                        break;
+                                    default:
+                                        <i class="fas fa-check amenity-icon"></i>
+                                        break;
+                                }
+                                @flag
+                            </div>
+                        }
+                    </td> *@
+                    <td>
+                        @foreach (var img in @item.Images)
+                        {
+                            <img src="~/ProductsImages/@img.Image"
+                                 data-src="@Url.Content("~/ProductsImages/" + img.Image)"
+                                 class="img-thumbnail img-clickable hotel-image"
+                                 data-bs-toggle="modal"
+                                 data-bs-target="#imageModal"
+                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; cursor: pointer;" />
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.id" class="action-icon edit-icon" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.id" class="action-icon details-icon" title="Details">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.id" class="action-icon delete-icon" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<partial name="_modalPartial" />

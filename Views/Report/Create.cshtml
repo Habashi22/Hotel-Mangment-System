@@ -1,0 +1,66 @@
+﻿@model MVCBookingFinal_YARAB_.Models.Report
+
+@{
+    ViewData["Title"] = "Create Report";
+}
+
+<hr />
+<div class="row justify-content-center">
+    <div class="card shadow-lg p-4 rounded-4" style="width: 450px; background-color: #f8f9fa; border: none;">
+        <h2 class="text-center mt-3">Add a New Report</h2>
+        <hr />
+
+        <form asp-action="Create">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="HotelId" class="form-label fw-bold">Hotel Name</label>
+                <select asp-for="HotelId" class="form-select border-2" asp-items="ViewBag.HotelId"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Complaint" class="form-label fw-bold"></label>
+                <textarea asp-for="Complaint" class="form-control border-2" rows="4" placeholder="Enter complaint details..."></textarea>
+                <span asp-validation-for="Complaint" class="text-danger"></span>
+            </div>
+
+            <div class="form-group d-grid gap-2" id="formbttn">
+                <button type="submit" class="btn btn-primary "><i class="fas fa-save"></i> Submit Report</button>
+            </div>
+           @*  <div class="form-group d-grid gap-2" id="formmbtn">
+                <button type="submit" class="btn btn-primary px-4 py-2 fw-bold shadow-sm">Save</button>
+            </div> *@
+            <div class="text-center mt-3">
+                <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<style>
+    h2 {
+        color: #1A374D;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #1a374d;
+        border-color: #1a374d;
+    }
+
+        .btn-primary:hover {
+            background-color: #406882;
+            border-color: #406882;
+        }
+
+    .formbttn {
+        width: 50px;
+    }
+
+</style>

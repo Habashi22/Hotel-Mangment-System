@@ -1,0 +1,24 @@
+﻿@* @model MVCBookingFinal_YARAB_.Models.City
+<a asp-action="ViewHotels" asp-controller="Reservation" asp-route-CountryOrCity="@Model.Name">
+    <div class="card bg-dark text-white overflow-hidden" style="width:350px;height:250px;border-radius:10px">
+        <img class="card-img img-fluid mw-100 mh-100  " src="~/ProductsImages/hero2.webp" alt="~/ProductsImages/hero2.webp">
+        <div class="card-img-overlay mw-100 mh-100">
+            <h3 class="card-title fw-bold">@Model.Name</h3>
+        </div>
+    </div>
+</a>
+ *@
+@model MVCBookingFinal_YARAB_.Models.City
+<a asp-action="ViewHotels" asp-controller="Reservation" asp-route-CountryOrCity="@Model.Name">
+
+    <div class="card bg-dark text-white overflow-hidden" style="width: 100%; height: 250px; border-radius: 10px;">
+
+        <img class="card-img img-fluid" src="~/ProductsImages/@Model.Image" alt="@Model.Name" style="width: 100%; height: 100%; object-fit: cover;">
+        
+        <div class="card-img-overlay d-flex align-items-center justify-content-center">
+            <h3 class="card-title fw-bold text-center">@Model.Name</h3>
+        </div>
+
+    </div>
+
+</a>

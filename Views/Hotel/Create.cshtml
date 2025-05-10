@@ -1,0 +1,166 @@
+﻿
+
+@model MVCBookingFinal_YARAB_.ViewModels.HotelViewModel
+
+@{
+    ViewData["Title"] = "Create Hotel";
+}
+
+<div class="create-hotel-container">
+    <div class="form-header">
+        <h1><i class="fas fa-hotel me-2"></i>Create New Hotel</h1>
+        <a asp-action="Index" class="btn-back">
+            <i class="fas fa-arrow-left me-2"></i>Back to List
+        </a>
+    </div>
+
+    <div class="form-container">
+        <div class="form-card">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="text-danger validation-summary"></div>
+                <partial name="_partialView.cshtml" />
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-save me-2"></i>Create Hotel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .create-hotel-container {
+        padding: 2rem;
+        background-color: #f8f9fa;
+        min-height: 100vh;
+    }
+
+    .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2rem;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+        .form-header h1 {
+            color: white;
+            font-size: 2rem;
+            margin: 0;
+        }
+
+    .btn-back {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-back:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.05);
+        animation: slideUp 0.5s ease-out;
+    }
+
+    .validation-summary {
+        background-color: #fff5f5;
+        border-left: 4px solid #fc8181;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+   @@keyframes slideUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* Form Field Styling */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .form-header
+
+    {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .form-card {
+        padding: 1.5rem;
+    }
+
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

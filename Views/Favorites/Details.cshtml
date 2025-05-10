@@ -1,0 +1,79 @@
+﻿@model MVCBookingFinal_YARAB_.Models.Favorite
+
+@{
+    ViewData["Title"] = "Favorite Details";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mt-4">Favorite Details</h1>
+    <hr />
+    <div class="card-body" style="width:800px; margin: 0 auto;">
+        <table class="table table-striped table-hover table-rounded overflow-auto">
+            <thead class="custom-row">
+                <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.Hotel)</td>
+                    <td>@Html.DisplayFor(model => model.Hotel.Name)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.Hotel.Address)</td>
+                    <td>@Html.DisplayFor(model => model.Hotel.Address)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.Hotel.PhoneNumber)</td>
+                    <td>@Html.DisplayFor(model => model.Hotel.PhoneNumber)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.User.UserName)</td>
+                    <td>@Html.DisplayFor(model => model.User.UserName)</td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.User.Email)</td>
+                    <td>@Html.DisplayFor(model => model.User.Email)</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-center">
+            <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back to List</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    table {
+        background-color: white;
+    }
+
+    .table-rounded {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+        .table-rounded th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        .table-rounded th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+    .custom-row th {
+        text-align: left;
+        background-color: #1a374d;
+        color: white;
+        font-weight: bold;
+    }
+
+    td {
+        text-align: left;
+    }
+
+    .container {
+        max-width: 92%;
+    }
+</style>

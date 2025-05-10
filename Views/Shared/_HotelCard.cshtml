@@ -1,0 +1,78 @@
+﻿
+
+
+@model MVCBookingFinal_YARAB_.Models.Hotel
+
+<a asp-action="details" asp-controller="hotel" asp-route-id="@Model.id" class="text-decoration-none text-dark">
+    <div class="card h-100" style="border-radius:15px; overflow: hidden">
+
+       @*  ~/ProductsImages/@Model.Images.FirstOrDefault() *@
+        <img src="~/ProductsImages/pyramids.jpg" class="card-img-top" alt="@Model.Name" style="height: 250px;object-fit: cover; ">
+        <div class="card-body">
+            <h5 class="card-title fw-bold">@Model.Name</h5>
+            <p class="card-text" style="font:3px">@Model.starRating</p>
+            <p class="card-text" style="font:3px">@Model.Reviewed.Count() reviews</p>
+            <p class="card-text" style="font:3px">
+                @if (Model.Rooms.Any())
+                {
+                    var newPrice = Model.Rooms.Min(r => r.PricePerNight);
+                    var oldPrice = newPrice + 90; // Old price is $90 more
+
+                <p class="card-text">
+                    <span >starting from</span>
+                    <span style="color: red; text-decoration: line-through;">$@oldPrice</span>
+                    <span class="fw-bold ms-2" style="color: green;">$@newPrice</span>
+                </p>
+                }
+                else
+                {
+                <p class="card-text">N/A</p>
+                }
+
+            </p>
+            
+        </div>
+    </div>
+</a>
+
+
+
+
+@* 
+<div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+    <div class="media-1">
+        <a href="#" class="d-block mb-3"><img src="~/ProductsImages/pyramids.jpg" alt="Image" class="img-fluid"></a>
+
+        <span class="d-flex align-items-center loc mb-2">
+            <span class="icon-room mr-3"></span>
+            <span>@Model.city.Name</span>
+        </span>
+
+        <div class="d-flex align-items-center">
+            <div>
+                <h3><a href="#">@Model.Name</a></h3>
+                <div class="price ml-auto">
+                    @if (Model.Rooms.Any())
+                    {
+                        var newPrice = Model.Rooms.Min(r => r.PricePerNight);
+                        var oldPrice = newPrice + 90; // Old price is $90 more
+
+                        <p>
+                            <span>starting from</span>
+                            <span style="color: red; text-decoration: line-through;">$@oldPrice</span>
+                            <span class="fw-bold ms-2" style="color: green;">$@newPrice</span>
+                        </p>
+                    }
+                    else
+                    {
+                        <p >N/A</p>
+                    }
+                     <span>$@Model.</span> 
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div> *@
+

@@ -1,0 +1,296 @@
+﻿@model MVCBookingFinal_YARAB_.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "EditAccount";
+    string pic = @ViewBag.ProfilePicture ?? "Default.jpg";
+}
+
+
+<style>
+    .profile-sidebar {
+        background: #fff;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        padding: 2rem;
+        min-height: calc(100vh - 100px);
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .profile-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .nav-item {
+        padding: 1rem;
+        border-radius: 8px;
+        color: #495057;
+        text-decoration: none;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .nav-item i {
+            margin-right: 10px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #f8f9fa;
+            color: #0d6efd;
+        }
+
+    .profile-content {
+        padding: 2rem;
+    }
+
+    .section-title {
+        margin-bottom: 2rem;
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .form-control {
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+    }
+
+    .btn-primary {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+    }
+
+    .badge {
+        padding: 0.5em 0.8em;
+        border-radius: 6px;
+    }
+
+    .file-upload-container {
+        margin-top: 10px;
+    }
+
+    .custom-file-upload {
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 24px;
+        background: #1a374d;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 14px;
+        gap: 8px;
+    }
+
+        .custom-file-upload:hover {
+            background: #142c3c;
+            transform: translateY(-1px);
+        }
+
+        .custom-file-upload i {
+            font-size: 16px;
+        }
+
+    input[type="file"] {
+        display: none;
+    }
+
+    .selected-file-name {
+        margin-top: 8px;
+        color: #666;
+        font-size: 14px;
+    }
+</style>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 profile-sidebar">
+            <div class="profile-header text-center mb-4">
+                <img src="~/ProductsImages/@pic" class="profile-avatar" alt="Profile Picture" />
+                <h4 class="mt-3">@Model.FirstName @Model.LastName</h4>
+                <p class="text-muted">@Model.Email</p>
+            </div>
+
+            <div class="profile-nav">
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-user-edit"></i> Edit Profile
+                </a>
+                <a asp-action="MyReservations" asp-controller="reservation" class="nav-item">
+                    <i class="fas fa-calendar-check"></i> My Reservations
+                    @* <span class="badge bg-primary">3</span> *@
+                </a>
+                <a asp-action="ViewMyDraft" asp-controller="reservation" class="nav-item">
+                    <i class="fas fa-clock"></i> My Draft Reservation
+                   
+                </a>
+                <a asp-controller="Reviews" asp-action="MyReviews" class="nav-item">
+                    <i class="fas fa-star"></i> My Reviews
+                    
+                </a>
+                <a asp-controller="Invoice" asp-action="MyInvoices" class="nav-item">
+                    <i class="fas fa-file-invoice"></i>My Invoices
+                </a>
+                <a asp-controller="Favorites" asp-action="Index" asp-route-foruser="true" class="nav-item">
+                    
+                        <i class="fas fa-heart" style=" margin-right: 8px;"></i>
+                        My Favorites
+                    
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="profile-content">
+                <h2 class="section-title">Edit Profile</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <form asp-action="EditAccount" enctype="multipart/form-data">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="FirstName"></label>
+                                        <input asp-for="FirstName" class="form-control" />
+                                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="LastName"></label>
+                                        <input asp-for="LastName" class="form-control" />
+                                        <span asp-validation-for="LastName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="UserName"></label>
+                                        <input asp-for="UserName" class="form-control" />
+                                        <span asp-validation-for="UserName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="Email"></label>
+                                        <input asp-for="Email" class="form-control" />
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="DateOfBirth"></label>
+                                        <input asp-for="DateOfBirth" class="form-control" />
+                                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="PhoneNumber"></label>
+                                        <input asp-for="PhoneNumber" class="form-control" />
+                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>  
+                            <div class="row">
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="Password"></label>
+                                        <input asp-for="Password" class="form-control" />
+                                        <span asp-validation-for="Password" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="ConfirmPassword"></label>
+                                        <input asp-for="ConfirmPassword" class="form-control" />
+                                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="ProfilePicture">Profile Picture</label>
+                                        <div class="file-upload-container">
+                                            <label for="fileinput" class="custom-file-upload">
+                                                <i class="fas fa-cloud-upload-alt"></i>
+                                                Choose New Picture
+                                            </label>
+                                            <input asp-for="ProfilePicture" type="file" id="fileinput" accept="image/*" />
+                                            <div class="selected-file-name"></div>
+                                            <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Continue with other form groups in similar row/col structure -->
+
+                            <div class="form-group text-end mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Existing click handler
+        document.querySelector('.profile-avatar').addEventListener('click', function() {
+            document.getElementById('fileinput').click();
+        });
+
+        // Updated change handler
+        document.getElementById('fileinput').addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    document.querySelector('.profile-avatar').src = e.target.result;
+                }
+                reader.readAsDataURL(e.target.files[0]);
+
+                // Update selected file name
+                const fileName = e.target.files[0].name;
+                document.querySelector('.selected-file-name').textContent = fileName;
+            }
+        });
+    </script>
+
+
+
+   
+
+
+}
+
+
+
+
+
+

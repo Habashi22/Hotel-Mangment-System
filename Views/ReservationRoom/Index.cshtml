@@ -1,0 +1,63 @@
+﻿@model IEnumerable<MVCBookingFinal_YARAB_.Models.ReservationRoom>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReservationId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RoomId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.UserName)
+            </th>
+            
+@*             <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th> *@
+
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.id)
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Reservation.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Room.Id)
+            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.UserName)
+                </td>
+ @*            <td>
+                @Html.DisplayFor(modelItem => item.User.Id)
+            </td> *@
+
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

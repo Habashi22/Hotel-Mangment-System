@@ -1,0 +1,304 @@
+﻿@model MVCBookingFinal_YARAB_.Models.Hotel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+<div class="delete-container">
+    <div class="delete-card">
+        <div class="card-header">
+            <h1 class="card-title">
+                <i class="fas fa-exclamation-triangle"></i>
+                Delete Confirmation
+            </h1>
+        </div>
+
+        <div class="card-body">
+            <div class="warning-message">
+                <i class="fas fa-hotel"></i>
+                <h3>Are you sure you want to delete this hotel?</h3>
+                <p>This action cannot be undone.</p>
+            </div>
+
+            <div class="hotel-details">
+                <div class="hotel-header">
+                    <h4>@Model.Name</h4>
+                    <div class="star-rating">
+                        @for (int i = 0; i < Model.starRating; i++)
+                        {
+                            <i class="fas fa-star"></i>
+                        }
+                    </div>
+                </div>
+
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <strong>Address</strong>
+                            <p>@Model.Address</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <strong>Email</strong>
+                            <p>@Model.Email</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <strong>Phone</strong>
+                            <p>@Model.PhoneNumber</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <i class="fas fa-city"></i>
+                        <div>
+                            <strong>City</strong>
+                            <p>@Model.city.Name</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hotel-images">
+                    <strong>Hotel Images</strong>
+                    <div class="images-grid">
+                        @foreach (var img in Model.Images)
+                        {
+                            <img src="~/ProductsImages/@img.Image"
+                                 data-src="@Url.Content("~/ProductsImages/" + img.Image)"
+                                 class="img-clickable"
+                                 data-bs-toggle="modal"
+                                 data-bs-target="#imageModal" />
+                        }
+                    </div>
+                </div>
+
+                <div class="description-box">
+                    <strong>Description</strong>
+                    <p>@Model.Description</p>
+                </div>
+
+                <form asp-action="Delete" class="delete-actions">
+                    <input type="hidden" asp-for="id" />
+                    <a asp-action="Index" class="btn-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to List
+                    </a>
+                    <button type="submit" class="btn-danger">
+                        <i class="fas fa-trash-alt"></i>
+                        Confirm Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="related-sections">
+        <div class="section-card">
+            <h2><i class="fas fa-bed"></i> Rooms</h2>
+            <div class="rooms-grid">
+                @if (Model?.Rooms != null)
+                {
+                    @foreach (var room in Model.Rooms)
+                    {
+                        <partial name="RoomView" model="room" />
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h2><i class="fas fa-star"></i> Reviews</h2>
+            <partial name="ReviewsView" model="@Model.Reviewed" />
+        </div>
+
+        <div class="section-card">
+            <h2><i class="fas fa-flag"></i> Reports</h2>
+            <partial name="ReportsView" model="@Model.Reported" />
+        </div>
+    </div>
+</div>
+
+<style>
+    .delete-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .delete-card, .section-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 25px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .card-header {
+        background: #1a374d;
+        padding: 1.5rem;
+        color: white;
+    }
+
+    .card-title {
+        margin: 0;
+        font-size: 1.75rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .warning-message {
+        text-align: center;
+        color: #dc3545;
+        margin-bottom: 2rem;
+        padding: 2rem;
+        background: #fff5f5;
+        border-radius: 12px;
+    }
+
+        .warning-message i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .warning-message h3 {
+            margin: 1rem 0;
+            color: #dc3545;
+        }
+
+    .hotel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+    }
+
+    .star-rating {
+        color: gold;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .detail-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+
+        .detail-item i {
+            color: #1a374d;
+            font-size: 1.25rem;
+        }
+
+    .hotel-images {
+        margin: 2rem 0;
+    }
+
+    .images-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+        .images-grid img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+            .images-grid img:hover {
+                transform: scale(1.05);
+            }
+
+    .description-box {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 2rem 0;
+    }
+
+    .delete-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .btn-secondary, .btn-danger {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.875rem 1.75rem;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-secondary {
+        background: #e9ecef;
+        color: #495057;
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+        .btn-secondary:hover, .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+    .section-card {
+        padding: 1.5rem;
+    }
+
+        .section-card h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1a374d;
+            margin-bottom: 1.5rem;
+        }
+
+    @@media (max-width: 768px) {
+        .delete-actions
+
+    {
+        flex-direction: column;
+    }
+
+    .btn-secondary, .btn-danger {
+        width: 100%;
+        justify-content: center;
+    }
+
+    }
+</style>
+
+<partial name="_modalPartial"></partial>l>

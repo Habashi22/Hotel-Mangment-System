@@ -1,0 +1,32 @@
+﻿@model MVCBookingFinal_YARAB_.Models.Room
+
+        <div class="card text-white bg-secondary mb-3" style="max-width: 20rem;">
+            <div class="card-header">
+
+                <div>
+                    @if (Model.Images is not null)
+                    {
+                        @foreach (var img in Model.Images)
+                        {
+                    <img src="~/ProductsImages/@img.Image"
+                         data-src="@Url.Content("~/ProductsImages/" + img.Image)"
+                         class="img-thumbnail img-clickable"
+                         data-bs-toggle="modal"
+                         data-bs-target="#imageModal"
+                         style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; cursor: pointer;" />
+                        }
+                    }
+                </div>
+            </div>
+            <div class="card-body">
+
+                <h4 class="card-title">@Model.roomType</h4>
+                <h4 class="card-title">@Model.Status</h4>
+                <h4 class="card-title">@Model.Floor th floor</h4>
+                <h4 class="card-title">@Model.Capacity People</h4>
+                <h4 class="card-title">@Model.PricePerNight $ per night</h4>
+
+            </div>
+
+        </div>
+

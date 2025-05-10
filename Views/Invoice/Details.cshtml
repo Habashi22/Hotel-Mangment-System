@@ -1,0 +1,349 @@
+﻿@model MVCBookingFinal_YARAB_.Models.Invoice
+
+@{
+    ViewData["Title"] = "Invoice Details";
+}
+
+<link rel="stylesheet" href="/css/InvoiceDetails.css">
+
+
+</link>
+
+
+<div class="container mt-4 invoice-details">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="mb-0 text-white">Invoice Details</h4>
+        </div>
+        <div class="card-body">
+            <!-- Payment Information Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h5 class="section-title border-bottom pb-2">Payment Information</h5>
+                </div>
+                <div class="col-md-6">
+                    @if (Model.Payment.payment is StripePaymentMethod method)
+                    {
+                        <p class="mb-1">
+                            <span class="detail-label">Stripe ID:</span>
+                            <span class="detail-value">@method.AccountNumber</span>
+                        </p>
+                    }
+                    else if (Model.Payment.payment is CardPaymentMethod method2)
+                    {
+                        <p class="mb-1">
+                            <span class="detail-label">Card Number:</span>
+                            <span class="detail-value">@method2.CardNumber</span>
+                        </p>
+                        <p class="mb-1">
+                            <span class="detail-label">CVV:</span>
+                            <span class="detail-value">@method2.CVV</span>
+                        </p>
+                    }
+                </div>
+            </div>
+
+            <!-- Reservation Details Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h5 class="section-title border-bottom pb-2">Reservation Details</h5>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <span class="detail-label">Hotel:</span>
+                        <span class="detail-value">@Model.Reservation.Reserved.FirstOrDefault()?.Room.Hotel.Name</span>
+                    </p>
+                    <p class="mb-1">
+                        <span class="detail-label">Check-in:</span>
+                        <span class="detail-value">@Model.Reservation.CheckInDate.ToString("MM/dd/yyyy hh:mm tt")</span>
+                    </p>
+                    <p class="mb-1">
+                        <span class="detail-label">Check-out:</span>
+                        <span class="detail-value">@Model.Reservation.CheckOutDate.ToString("MM/dd/yyyy hh:mm tt")</span>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <span class="detail-label">Guest:</span>
+                        <span class="detail-value">@Model.Reservation.Reserved.SingleOrDefault()?.User.UserName</span>
+                    </p>
+                    <p class="mb-1">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value">@Model.Reservation.Reserved.SingleOrDefault()?.User.Email</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Room Details Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h5 class="section-title border-bottom pb-2">Room Details</h5>
+                </div>
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Room</th>
+                                    <th>Type</th>
+                                    <th>Price per Night</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var reservation in Model.Reservation.Reserved)
+                                {
+                                    <tr>
+                                        <td>@reservation.Room.Id</td>
+                                        <td>@reservation.Room.roomType</td>
+                                        <td class="text-end">$@reservation.Room.PricePerNight</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Services Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h5 class="section-title border-bottom pb-2">Additional Services</h5>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <span class="detail-label">Meal Plan:</span>
+                        <span class="detail-value">@Model.Reservation.mealPlan.plan ($@Model.Reservation.mealPlan.Price per day)</span>
+                    </p>
+                    <p class="mb-1 amenities-list">
+                        <span class="detail-label">Amenities:</span>
+                        <span class="detail-value">@Model.Reservation.amenity.Amenities ($@Model.Reservation.amenity.Price total)</span>
+                    </p>
+                </div>
+            </div>
+
+
+
+
+            <!-- Billing Summary Section -->
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="section-title border-bottom pb-2">Billing Summary</h5>
+                </div>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table billing-table">
+                            <tr>
+                                <td><span class="detail-label">Subtotal:</span></td>
+                                <td class="text-end">$@Model.TotalAmount</td>
+                            </tr>
+                            <tr>
+                                <td><span class="detail-label">Tax (@Model.Tax%):</span></td>
+                                <td class="text-end">$@(Model.TotalAmount * Model.Tax / 100)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="detail-label">Discount (@Model.discount%):</span></td>
+                                <td class="text-end text-danger">-$@(Model.TotalAmount * Model.discount / 100)</td>
+                            </tr>
+                            <tr class="table-primary">
+                                <td><span class="detail-label">Final Amount:</span></td>
+                                <td class="text-end final-amount"><strong>$@Model.FinalAmount</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between">
+                <small class="detail-label">Payment Date: <span class="detail-value">@Model.Payment.PaymentDate.ToString("MM/dd/yyyy hh:mm tt")</span></small>
+                <small class="detail-label">Payment Method: <span class="detail-value">@Model.Payment.payment.PaymentType</span></small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-3 mb-4">
+    <a href="javascript:history.back()" class="btn btn-secondary">Back to List</a>
+</div>
+
+@* @model MVCBookingFinal_YARAB_.Models.Invoice
+
+@{
+    ViewData["Title"] = "Details";
+    // Layout = "HotelRooms";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Invoice</h4>
+    <hr />
+    <dl class="row">
+  
+        @if(Model.Payment.payment is StripePaymentMethod method)
+        {
+
+            <dt class="col-sm-2">
+                StripeId
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => method.AccountNumber)
+            </dd>
+        }
+        else
+        @if (Model.Payment.payment is CardPaymentMethod method2)
+        {
+   
+            <dt class="col-sm-2">
+                CardNumber
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => method2.CardNumber)
+            </dd>
+            <dt class="col-sm-2">
+                CVV
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => method2.CVV);
+            </dd>
+        }
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Reservation.Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Reservation.Id)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Reservation.Reserved.FirstOrDefault().Room.Hotel.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Reservation.Reserved.FirstOrDefault().Room.Hotel.Name)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Reservation.Reserved.FirstOrDefault().Room) 
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var reservation in Model.Reservation.Reserved)
+            {
+                @Html.DisplayFor(model => reservation.Room.Id) <span> => @Html.DisplayFor(model => reservation.Room.PricePerNight)  per night</span>
+                <br/>
+            }
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Reservation.Reserved.FirstOrDefault().Room.roomType)
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var reservation in Model.Reservation.Reserved)
+            {
+                @Html.DisplayFor(model => reservation.Room.roomType)
+                <br />
+            }
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Reservation.mealPlan.plan)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Reservation.mealPlan.plan) => @Html.DisplayFor(model => model.Reservation.mealPlan.Price) $ Per Day
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Reservation.amenity.Amenities)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Reservation.amenity.Amenities) => @Html.DisplayFor(model => model.Reservation.amenity.Price) $ Total
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Reservation.Reserved.SingleOrDefault().User.UserName) 
+        </dt>
+        <dd class="col-sm-10">
+            UserName: @Html.DisplayFor(model => model.Reservation.Reserved.SingleOrDefault().User.UserName)
+            <br />
+            Mail: @Html.DisplayFor(model => model.Reservation.Reserved.SingleOrDefault().User.Email)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Reservation.CheckInDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Reservation.CheckInDate)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Reservation.CheckOutDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Reservation.CheckOutDate)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalAmount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalAmount)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Tax)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Tax) <span>%</span>
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.discount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.discount) <span>%</span>
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FinalAmount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FinalAmount)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PaymentId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Payment.Id)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Payment.payment.PaymentType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Payment.payment.PaymentType)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Payment.PaymentDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Payment.PaymentDate)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Reservation.UsedPromoCodes)
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var Pc in Model.Reservation.UsedPromoCodes)
+            {
+                @Html.DisplayFor(model => Pc.PromoCode.Code)
+                <br />
+                @Html.DisplayFor(model => Pc.PromoCode.Discount) <span>%</span>
+            }
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+ *@

@@ -1,0 +1,347 @@
+﻿@model IEnumerable<MVCBookingFinal_YARAB_.Models.AppUser>
+@inject UserManager<AppUser> manager;
+
+@{
+    ViewData["Title"] = "Manage Users";
+}
+<style>
+    .users-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        padding: 0;
+        margin: 40px auto;
+        overflow: hidden;
+        width:80%;
+    }
+
+    .page-title {
+        background: #1a374d;
+        color: white;
+        padding: 25px 30px;
+        margin: 0;
+        font-size: 24px;
+        font-weight: 500;
+    }
+
+    .table-container {
+        padding: 20px 30px;
+        overflow-x: auto;
+    }
+
+    .users-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .users-table th {
+            padding: 15px 10px;
+            color: #666;
+            font-weight: 500;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .users-table td {
+            padding: 20px 10px;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
+
+        .users-table tr:hover td {
+            background: #f8f9fa;
+        }
+
+    .role-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+        .role-badge.admin {
+            background: #1a374d;
+            color: white;
+        }
+
+        .role-badge.user {
+            background: #e9ecef;
+            color: #666;
+        }
+
+    .admin-action-btn {
+        width: 170px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-decoration: none;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-make-admin, .btn-remove-admin {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-make-admin {
+        background: #1a374d;
+        color: white;
+    }
+
+        .btn-make-admin:hover {
+            background: #142c3c;
+            transform: translateY(-1px);
+        }
+
+    .btn-remove-admin {
+        background: #dc3545;
+        color: white;
+    }
+
+        .btn-remove-admin:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+    @@media (max-width: 1200px) {
+        .table-container {
+            padding: 15px;
+        }
+
+        .users-table {
+            font-size: 14px;
+        }
+    }
+</style>
+<div class="users-container">
+    <h1 class="page-title">Manage Users & Roles</h1>
+
+    <div class="table-container">
+        <table class="users-table table-striped mw-100">
+<thead>
+    <tr>
+        <th>
+            <div class="th-content">
+                <i class="fas fa-hashtag th-icon"></i>
+                ID
+            </div>
+        </th>
+        <th>
+            <div class="th-content">
+                <i class="fas fa-user th-icon"></i>
+                First Name
+            </div>
+        </th>
+        <th>
+            <div class="th-content">
+                <i class="fas fa-user th-icon"></i>
+                Last Name
+            </div>
+        </th>
+        <th>
+            <div class="th-content">
+                <i class="fas fa-at th-icon"></i>
+                Username
+            </div>
+        </th>
+        <th>
+            <div class="th-content">
+                <i class="fas fa-calendar th-icon"></i>
+                Date of Birth
+            </div>
+        </th>
+        <th>
+            <div class="th-content">
+                <i class="fas fa-envelope th-icon"></i>
+                Email
+            </div>
+        </th>
+        <th>
+            <div class="th-content">
+                <i class="fas fa-phone th-icon"></i>
+                Phone
+            </div>
+        </th>
+        <th>
+            <div class="th-content">
+                <i class="fas fa-user-tag th-icon"></i>
+                Role
+            </div>
+        </th>
+        <th>
+            <div class="th-content">
+                <i class="fas fa-cog th-icon"></i>
+                Actions
+            </div>
+        </th>
+    </tr>
+</thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>#@item.Id</td>
+                        <td>@item.FirstName</td>
+                        <td>@item.LastName</td>
+                        <td>@item.UserName</td>
+                        <td>@item.DateOfBirth.ToShortDateString()</td>
+                        <td>@item.Email</td>
+                        <td>@item.PhoneNumber</td>
+                        <td class="role-cell">
+                            @if (await manager.IsInRoleAsync(item, "ADMIN"))
+                            {
+                                <span class="role-badge admin">Admin</span>
+                            }
+                            else
+                            {
+                                <span class="role-badge user">User</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!await manager.IsInRoleAsync(item, "ADMIN"))
+                            {
+                                <a asp-action="MakeAdmin" asp-route-id="@item.Id" class="admin-action-btn btn-make-admin">
+                                    <i class="fas fa-user-shield"></i>
+                                    Make Admin
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-action="RemoveAdmin" asp-route-id="@item.Id" class="admin-action-btn btn-remove-admin">
+                                    <i class="fas fa-user-times"></i>
+                                    Remove Admin
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+@* @model IEnumerable<MVCBookingFinal_YARAB_.Models.AppUser>
+
+@{
+    ViewData["Title"] = "GiveRole";
+
+}
+@inject UserManager<AppUser> manager;
+
+
+<div class="container">
+<h1>GiveRole</h1>
+
+
+<div asp-validation-summary="ModelOnly"></div>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(G => G.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            
+            <th>
+                IsAdmin
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfBirth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+               
+                <th>
+                    @if (await manager.IsInRoleAsync(item,"ADMIN"))
+                    {
+                        <span>Admin</span>
+                    }
+                    else
+                    {
+                        <span>User</span>
+                    }
+                </th>
+            <td>
+                    @if (!await manager.IsInRoleAsync(item, "ADMIN"))
+                    {
+                       <a asp-action="MakeAdmin" asp-route-id="@item.Id" class="btn btn-primary">Make Admin</a> 
+                    }
+                    else
+                    {
+                        <a asp-action="RemoveAdmin" asp-route-id="@item.Id" class="btn btn-danger">Remove Admin</a>
+                    }
+
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+ *@
